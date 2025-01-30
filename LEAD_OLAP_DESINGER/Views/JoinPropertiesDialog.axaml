@@ -1,0 +1,71 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        MinHeight="346" MinWidth="500"
+        x:Class="LEAD_OLAP_DESINGER.JoinPropertiesDialog"
+        WindowStartupLocation="CenterScreen"
+        FontSize="14"
+        Title="Свойства соединения" SizeToContent="WidthAndHeight">
+
+
+  <Grid>
+    <!-- Define two equal width columns -->
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <!-- Define rows: content row and bottom button row -->
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <!-- Join Type and Condition -->
+      <RowDefinition Height="*"/>
+      <!-- Spacer for bottom row -->
+      <RowDefinition Height="Auto"/>
+      <!-- Button row -->
+    </Grid.RowDefinitions>
+
+    <!-- Left column for source table and field -->
+    <StackPanel Margin="10,10,5,10" Grid.Row="0" Grid.Column="0">
+      <TextBlock Text="Исходная таблица:" />
+      <TextBox x:Name="SourceTableName" Background="#FFC0C0FF" Margin="0,0,0,10" IsReadOnly="True" IsHitTestVisible="False"/>
+      <TextBlock Text="Имя поля:" />
+      <TextBox x:Name="SourceColumnName" Background="#FFC0C0FF" IsReadOnly="True" IsHitTestVisible="False"/>
+    </StackPanel>
+
+    <!-- Right column for target table and field -->
+    <StackPanel Margin="5,10,10,10" Grid.Row="0" Grid.Column="1">
+      <TextBlock Text="Целевая таблица:" />
+      <TextBox x:Name="TargetTableName" Background="#FFC0C0FF" Margin="0,0,0,10" IsReadOnly="True" IsHitTestVisible="False"/>
+      <TextBlock Text="Имя поля:" />
+      <TextBox x:Name="TargetColumnName" Background="#FFC0C0FF" IsReadOnly="True" IsHitTestVisible="False"/>
+    </StackPanel>
+
+    <!-- Join Type and Condition across both columns -->
+    <StackPanel Margin="10,0,10,10" Grid.Row="1" Grid.ColumnSpan="2">
+      <TextBlock Text="Тип соединения:" />
+      <ListBox x:Name="JoinsList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" FontFamily="Consolas" Background="#C0FFC0">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <ListBoxItem Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+              <TextBlock Text="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </ListBoxItem>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <TextBlock Text="Условия соединения:" Margin="10,10,10,0"/>
+      <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,0,0,0">
+      <TextBox x:Name="JoinCondition" Background="#C0FFC0"/>
+      </ScrollViewer>
+    </StackPanel>
+
+    <!-- Buttons row, including OK and Cancel -->
+    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10,0,10,10">
+      <Button Content="OK" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" Click="AcceptButton_Click" />
+      <Button Content="Отмена" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" Click="CancelButton_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>

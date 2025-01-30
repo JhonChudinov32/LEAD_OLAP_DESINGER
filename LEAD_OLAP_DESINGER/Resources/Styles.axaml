@@ -1,0 +1,263 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <!-- Add Controls for Previewer Here -->
+    </Border>
+  </Design.PreviewWith>
+
+  <!-- Add Styles Here -->
+  <!-- Стиль для кнопки -->
+  <Style Selector="Button">
+    <Setter Property="Background" Value="{DynamicResource PrimaryColor}"/>
+    <Setter Property="Foreground" Value="{DynamicResource ButtonTextColor}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="CornerRadius" Value="5"/>
+    <Setter Property="Margin" Value="2,2,2,2"/>
+  </Style>
+
+  <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource ComboBoxBackgroundPointerOver}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonTextColor}" />
+  </Style>
+
+  <Style Selector="Button:pressed">
+    <Setter Property="RenderTransform" Value="scale(0.98)" />
+  </Style>
+
+  <Style Selector="Button:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource PrimaryColor}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ComboBoxBorderBrushPointerOver}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonTextColor}" />
+  </Style>
+  
+  <!-- Стиль для ComboBox -->
+  <Style Selector="ComboBox">
+    <Setter Property="Background" Value="{DynamicResource PrimaryColor}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="5"/>
+    
+  </Style>
+  <!-- Стиль для ComboBox (наведение)-->
+  <Style Selector="ComboBox:pointerover /template/ Border#Background">
+    <Setter Property="Background" Value="{DynamicResource ComboBoxBackgroundPointerOver}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ComboBoxBorderBrushPointerOver}" />
+    
+  </Style>
+
+  <!-- Стиль для ComboBoxItem -->
+  <Style Selector="ComboBoxItem">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="5"/>
+  </Style>
+  <!-- Стиль для ComboBoxItem (наведение)-->
+  <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+  <!-- Стиль для ComboBoxItem (нажатие)-->
+  <Style Selector="ComboBoxItem:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+  <!-- Стиль для ComboBoxItem (выбор (селект))-->
+  <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+
+  <!-- Стиль для TextBox -->
+  <Style Selector="TextBox">
+    <Setter Property="Background" Value="{DynamicResource PrimaryColor}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="5"/>
+  </Style>
+  <!-- Стиль для TextBox наведение-->
+  <Style Selector="TextBox:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundPointerOver}" />
+  </Style>
+  <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushPointerOver}"/>
+    <Setter Property="Background" Value="{DynamicResource TextControlBackgroundPointerOver}" />
+  </Style>
+
+  <Style Selector="TextBox:focus">
+    <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundFocused}" />
+  </Style>
+
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource TextControlBackgroundFocused}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushFocused}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+  </Style>
+
+  <!-- Стиль для ListBox -->
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+    <Setter Property="CornerRadius" Value="5"/>
+    <Setter Property="FontSize" Value="12"/>
+  </Style>
+
+  <!-- Стиль для ListBoxItem -->
+  <Style Selector="ListBoxItem">
+    <Setter Property="Background" Value="{DynamicResource ItemBackgroundColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource ItemTextColor}" />
+    <Setter Property="CornerRadius" Value="5"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="5"/>
+  </Style>
+
+  <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+
+  <Style Selector="TreeView">
+    <Setter Property="Background" Value="{DynamicResource ItemBackgroundColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource ItemTextColor}" />
+    <Setter Property="CornerRadius" Value="5"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+  </Style>
+  <!--  PointerOver state  -->
+  <Style Selector="TreeViewItem /template/ Border#PART_LayoutRoot:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushPointerOver}" />
+  </Style>
+  <Style Selector="TreeViewItem /template/ Border#PART_LayoutRoot:pointerover > ContentPresenter#PART_HeaderPresenter">
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+
+  <!--  Pressed state  -->
+  <Style Selector="TreeViewItem:pressed /template/ Border#PART_LayoutRoot:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushPointerOver}" />
+  </Style>
+  <Style Selector="TreeViewItem:pressed /template/ Border#PART_LayoutRoot:pointerover > ContentPresenter#PART_HeaderPresenter">
+    <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
+  </Style>
+
+  <!-- Стиль для DataGrid -->
+  <Style Selector="DataGrid">
+    <Setter Property="Background" Value="{DynamicResource PrimaryColor}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+    <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    <Setter Property="IsReadOnly" Value="True"/>
+    <Setter Property="SelectionMode" Value="Single"/>
+    <Setter Property="HeadersVisibility" Value="Column"/>
+    <Setter Property="CanUserResizeColumns" Value="True"/>
+    <Setter Property="CanUserSortColumns" Value="True"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="Margin" Value="5"/>
+    <Setter Property="IsTabStop" Value="False"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    <Setter Property="RowHeight" Value="25"/>
+  </Style>
+
+  <!-- Стиль для строки DataGridRow -->
+  <Style Selector="DataGridRow">
+    <Setter Property="Background" Value="{DynamicResource RowBackgroundColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource RowTextColor}" />
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+  </Style>
+
+  <!-- Стиль для строки DataGridRow при наведении -->
+  <Style Selector="DataGridRow:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusedBorderColor}" />
+  </Style>
+
+  <!-- Стиль для выделенной строки DataGridRow -->
+  <Style Selector="DataGridRow:selected">
+    <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource FocusedBorderColor}" />
+  </Style>
+
+  <!-- Стиль для ячейки DataGridCell -->
+  <Style Selector="DataGridCell">
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+  </Style>
+
+  <!-- Стиль для DataGridColumnHeader -->
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="Background" Value="{DynamicResource PrimaryColor}" />
+    <Setter Property="Foreground" Value="{DynamicResource ColumnHeaderTextColor}" />
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+    <Setter Property="Height" Value="25"/>
+  </Style>
+
+  <!-- Стиль для Menu -->
+  <Style Selector="Menu">
+    <Setter Property="Background" Value="{DynamicResource BackgroundColor}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Padding" Value="5"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+  </Style>
+
+  <!-- Стиль для MenuItem -->
+  <Style Selector="MenuItem">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource ItemTextColor}"/>
+    <Setter Property="Padding" Value="8,5"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+  </Style>
+
+  <!-- Стиль для выделенного MenuItem -->
+  <Style Selector="MenuItem:selected">
+    <Setter Property="Background" Value="{DynamicResource SecondaryColor}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+  </Style>
+
+  <!-- Стиль для TextBlock -->
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="Segoe UI"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+  </Style>
+</Styles>

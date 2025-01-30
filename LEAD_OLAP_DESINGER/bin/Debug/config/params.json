@@ -1,0 +1,34 @@
+{
+  "ConnectionList": [
+    {
+      "Id": 1,
+      "nameBD": "Тестовая LEAD5_beta_test",
+      "namePlatform": "MS SQL Server",
+      "mainIP": "192.168.0.12",
+      "mainPort": "1433",
+      "mainBD": "LEAD5_beta_test",
+      "mainUser": "lead_admin",
+      "mainPassword": "kJOCRYoRNUqR65E/nbOjfg=="
+    },
+    {
+      "Id": 2,
+      "nameBD": "LEADWMSTEST",
+      "namePlatform": "MS SQL Server",
+      "mainIP": "192.168.0.12",
+      "mainPort": "1433",
+      "mainBD": "LEADWMS_TEST",
+      "mainUser": "lead_admin",
+      "mainPassword": "kJOCRYoRNUqR65E/nbOjfg=="
+    },
+    {
+      "Id": 3,
+      "nameBD": "LEADWMSTEST(POSTGRES)",
+      "namePlatform": "PostgreSQL",
+      "mainIP": "192.168.160.21",
+      "mainPort": "5433",
+      "mainBD": "leadwms_test_dst",
+      "mainUser": "postgres",
+      "mainPassword": "kJOCRYoRNUqR65E/nbOjfg=="
+    }
+  ]
+}

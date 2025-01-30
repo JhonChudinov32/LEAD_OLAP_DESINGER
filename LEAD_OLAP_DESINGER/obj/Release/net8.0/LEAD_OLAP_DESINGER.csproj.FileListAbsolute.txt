@@ -1,0 +1,7 @@
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\LEAD_OLAP_DESINGER.csproj.AssemblyReference.cache
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\Avalonia\Resources.Inputs.cache
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\Avalonia\resources
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\LEAD_OLAP_DESINGER.GeneratedMSBuildEditorConfig.editorconfig
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\LEAD_OLAP_DESINGER.AssemblyInfoInputs.cache
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\LEAD_OLAP_DESINGER.AssemblyInfo.cs
+D:\Проекты\LOGISTIX\LEAD_OLAP_DESINGER\LEAD_OLAP_DESINGER\obj\Release\net8.0\LEAD_OLAP_DESINGER.csproj.CoreCompileInputs.cache

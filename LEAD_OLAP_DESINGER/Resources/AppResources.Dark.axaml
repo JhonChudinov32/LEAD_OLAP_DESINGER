@@ -1,0 +1,53 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Определение цветов для темной темы -->
+  <Color x:Key="PrimaryColor">#1E1E1E</Color>
+  <!-- Темный серый (фон) -->
+  <Color x:Key="SecondaryColor">#3A76D1</Color>
+  <!-- Светло-синий для акцентов -->
+  <Color x:Key="BackgroundColor">#2B2B2B</Color>
+  <!-- Темный серый для общего фона -->
+  <Color x:Key="BorderColor">#444A4D</Color>
+  <!-- Темный серый для границ -->
+  <Color x:Key="ItemBackgroundColor">Transparent</Color>
+  <!-- Прозрачный фон для элементов списка -->
+  <Color x:Key="ItemTextColor">#CCCCCC</Color>
+  <!-- Светло-серый для текста -->
+  <Color x:Key="RowBackgroundColor">#333333</Color>
+  <!-- Темно-серый для фона строк -->
+  <Color x:Key="RowTextColor">#D3D3D3</Color>
+  <!-- Светло-серый для текста строк -->
+  <Color x:Key="CellBackgroundColor">#2E2E2E</Color>
+  <!-- Чуть светлее для ячеек -->
+  <Color x:Key="CellTextColor">#E0E0E0</Color>
+  <!-- Почти белый для текста ячеек -->
+  <Color x:Key="ColumnHeaderBackgroundColor">#3B3B3B</Color>
+  <!-- Темно-серый для заголовков столбцов -->
+  <Color x:Key="ColumnHeaderTextColor">#FFFFFF</Color>
+  <!-- Белый текст для заголовков столбцов -->
+
+  <!-- Цвета для выделенных строк -->
+  <Color x:Key="FocusedBackgroundColor">#1D4F91</Color>
+  <!-- Темно-синий для фона выделения -->
+  <Color x:Key="FocusedBorderColor">#557AAB</Color>
+  <!-- Светло-синий для рамки выделения -->
+
+  <Color x:Key="TextColor">#EAEAEA</Color>
+  <!-- Светлый текст -->
+  <Color x:Key="ButtonTextColor">#4DB3FF</Color>
+  <!-- Голубой для текста кнопок -->
+  <Color x:Key="ComboBoxBorderBrushPointerOver">#4DB3FF</Color>
+  <Color x:Key="ComboBoxBackgroundPointerOver">#3A3A3A</Color>
+  <!-- Темный фон для ComboBox при наведении -->
+
+  <Color x:Key="TextControlBackgroundPointerOver">#3A3A3A</Color>
+  <Color x:Key="TextControlBorderBrushPointerOver">#4DB3FF</Color>
+  <Color x:Key="TextControlForegroundPointerOver">#EAEAEA</Color>
+
+  <Color x:Key="TextControlForegroundFocused">#FFFFFF</Color>
+  <Color x:Key="TextControlBorderBrushFocused">#4DB3FF</Color>
+  <Color x:Key="TextControlBackgroundFocused">#2E2E2E</Color>
+
+  <Color x:Key="SystemControlHighlightListLowBrush">#1D4F91</Color>
+  <Color x:Key="SystemControlHighlightAltBaseHighBrush">#3B3B3B</Color>
+</ResourceDictionary>

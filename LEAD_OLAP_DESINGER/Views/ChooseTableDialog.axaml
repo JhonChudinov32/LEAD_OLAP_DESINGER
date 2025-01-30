@@ -1,0 +1,76 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="350"
+        x:Class="LEAD_OLAP_DESINGER.ChooseTableDialog"
+        WindowStartupLocation="CenterScreen"
+        SizeToContent="WidthAndHeight"
+        FontSize="14" 
+        Title="Выберите таблицу"
+        MinWidth="500" MaxHeight="500">
+ 
+  <Grid Margin="10">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <!-- Label "Список таблиц" -->
+      <RowDefinition Height="*"/>
+      <!-- TableList -->
+      <RowDefinition Height="Auto"/>
+      <!-- Label "Алиас таблицы" -->
+      <RowDefinition Height="Auto"/>
+      <!-- AliasTextBox -->
+      <RowDefinition Height="Auto"/>
+      <!-- Buttons -->
+    </Grid.RowDefinitions>
+
+    <!-- Список таблиц -->
+    <TextBlock Text="Список таблиц:"
+               Grid.Row="0"
+               Margin="0,0,0,5" />
+
+    <ListBox Name="TableList"
+             Grid.Row="1"
+             SelectionChanged="TableList_SelectionChanged"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             FontSize="14"
+             FontFamily="Consolas">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <ListBoxItem Padding="0"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch">
+                      <!-- Add item content here, you can bind it to your data -->
+                      <TextBlock Text="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </ListBoxItem>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+      </ListBox>
+
+    <!-- Алиас таблицы -->
+    <TextBlock Text="Алиас таблицы:"
+               Grid.Row="2"
+               Margin="0,10,0,5" />
+    <TextBox Name="AliasTextBox"
+             Grid.Row="3"
+             Margin="0,0,0,10" />
+
+    <!-- Buttons -->
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Grid.Row="4">
+      <Button Name="CancelButton"
+              HorizontalContentAlignment="Center"
+              Content="Отмена"
+              Width="100"
+              Margin="0,0,10,0"
+              Click="CancelButton_Click"/>
+      <Button Name="AcceptButton"
+              HorizontalContentAlignment="Center"
+              Content="ОК"
+              Width="100"
+              Click="AcceptButton_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>

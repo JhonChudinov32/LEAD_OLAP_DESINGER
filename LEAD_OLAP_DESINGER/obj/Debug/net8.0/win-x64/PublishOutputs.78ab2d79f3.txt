@@ -1,0 +1,6 @@
+D:\Тестирование\OLAP_desinger\LEAD_OLAP_DESINGER.pdb
+D:\Тестирование\OLAP_desinger\av_libglesv2.dll
+D:\Тестирование\OLAP_desinger\libHarfBuzzSharp.dll
+D:\Тестирование\OLAP_desinger\sni.dll
+D:\Тестирование\OLAP_desinger\libSkiaSharp.dll
+D:\Тестирование\OLAP_desinger\LEAD_OLAP_DESINGER.exe

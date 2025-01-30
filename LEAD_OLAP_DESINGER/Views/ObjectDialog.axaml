@@ -1,0 +1,85 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" MinHeight="495" MaxWidth="800" MinWidth="500"
+        WindowStartupLocation="CenterScreen"
+        x:Class="LEAD_OLAP_DESINGER.ObjectDialog"
+        SizeToContent="WidthAndHeight"
+        Title="Свойства объекта"
+        FontSize="14">
+
+  <Grid Margin="10">
+    <!-- Определение строк -->
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" /> <!-- Класс объекта -->
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" /> <!-- Название объекта -->
+      <RowDefinition Height="Auto" /> <!-- Чекбоксы -->
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" /> <!-- Таблица -->
+      <RowDefinition Height="Auto" /> <!-- Вкладки -->
+      <RowDefinition Height="Auto" />    <!-- Текст выборки и условие -->
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" /> <!-- Кнопки -->
+    </Grid.RowDefinitions>
+
+    <!-- Класс объекта -->
+    <TextBlock Text="Класс объекта:" Grid.Row="0" />
+    <ComboBox Name="ClassCombo" Grid.Row="1" Margin="0,5,0,5" HorizontalAlignment="Stretch" Background="#FFC0C0FF" />
+
+    <!-- Название объекта -->
+    <TextBlock Text="Название объекта:" Grid.Row="2" />
+    <TextBox Name="ObjectName" Grid.Row="3" Margin="0,5,0,5" HorizontalAlignment="Stretch" Background="#C0FFC0" />
+
+    <!-- Чекбоксы -->
+    <CheckBox Name="IsNumeric" Content="Интерпретировать значение, как число" Grid.Row="4" />
+
+    <!-- Таблица -->
+    <TextBlock Text="Таблица:" Grid.Row="5" />
+    <ComboBox Name="TablesCombo" Grid.Row="6" Margin="0,5,0,5" HorizontalAlignment="Stretch" Background="#FFC0C0FF" />
+
+    <!-- Вкладки -->
+    <TextBlock Text="Тип и параметры объекта:" Grid.Row="7" />
+    <TabControl Name="TabControl" Grid.Row="8" Margin="0,5,0,5" HorizontalAlignment="Stretch">
+      <TabItem Header="Измерение" FontSize="14" FontFamily="Consolas">
+        <TextBlock Text="Измерение не требует назначения дополнительных параметров" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+      </TabItem>
+      <TabItem Header="Мера" FontSize="14" FontFamily="Consolas">
+        <StackPanel>
+          <TextBlock Text="Функция агрегирования:" Margin="0,5"/>
+          <ComboBox Name="AggregatesCombo" Margin="0,5" HorizontalAlignment="Stretch"/>
+          <CheckBox Name="IsFloat" Content="Может содержать дробное значение" Margin="0,10"/>
+        </StackPanel>
+      </TabItem>
+      <TabItem Header="Деталь" FontSize="14" FontFamily="Consolas">
+        <StackPanel>
+          <TextBlock Text="Детализируемое измерение:" Margin="0,5"/>
+          <ComboBox Name="DimensionsCombo" Margin="0,5" HorizontalAlignment="Stretch"/>
+        </StackPanel>
+      </TabItem>
+    </TabControl>
+
+    <!-- Текст выборки -->
+    <TextBlock Text="Текст выборки:" Grid.Row="9" />
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="10">
+      <TextBox Name="SelectStatement" AcceptsReturn="True" HorizontalAlignment="Stretch" Background="#C0FFC0" Margin="0,5" />
+    </ScrollViewer>
+
+    <!-- Условие выборки -->
+    <TextBlock Text="Условие выборки:" Grid.Row="11" Margin="0,0,0,10" />
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="12" Margin="0,0,0,0">
+      <TextBox Name="WhereStatement" AcceptsReturn="True" HorizontalAlignment="Stretch" Background="#C0FFC0" />
+    </ScrollViewer>
+
+    <!-- Кнопки -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="13">
+      <Button Name="CancelButton" Content="Отмена" Width="100" Margin="0,0,10,0" HorizontalContentAlignment="Center" Click="CancelButton_Click" />
+      <Button Name="AcceptButton" Content="ОК" Width="100" HorizontalContentAlignment="Center" Click="AcceptButton_Click" />
+    </StackPanel>
+  </Grid>
+</Window>

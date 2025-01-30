@@ -1,0 +1,252 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LEAD_OLAP_DESINGER.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+        xmlns:tree="clr-namespace:Avalonia.Controls.TreeDataGrid;assembly=Avalonia.Controls.TreeDataGrid"
+        xmlns:l="clr-namespace:LEAD_OLAP_DESINGER.Helpers;assembly=LEAD_OLAP_DESINGER"
+        xmlns:local="clr-namespace:LEAD_OLAP_DESINGER.Models;assembly=LEAD_OLAP_DESINGER"
+        x:Class="LEAD_OLAP_DESINGER.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/logistix.ico"
+        Title="{Binding title}"
+        Width="800" Height="500"
+        SizeToContent="WidthAndHeight"
+        WindowState="Maximized"
+        KeyDown ="OnKeyDown">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+  <Window.Resources>
+    <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
+  </Window.Resources>
+
+
+  <DockPanel>
+    <!-- Верхнее меню -->
+    <Menu DockPanel.Dock="Top" Background="Transparent" FontSize="12" FontFamily="Consolas">
+      <!--
+      <MenuItem Header="Файл" >
+        <MenuItem Name="ConnectBD" Header="Подключиться  Ctrl+С" Click="Connect_Click"/>
+        <MenuItem Name="ExitMenu" Header="Выход Ctrl+Q" Click="Exit_Click"/>
+      </MenuItem>
+      -->
+      <MenuItem>
+        <MenuItem.Header>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <!-- Иконка для пункта меню -->
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/gear.png" Width="14" Height="14" Margin="0,0,5,0"/>
+            <TextBlock Text="Параметры" VerticalAlignment="Center"/>
+          </StackPanel>
+        </MenuItem.Header>
+        <MenuItem Name="ConnectMenu" Header="Подключения Ctrl+P" Click="Param_Click">
+          <MenuItem.Icon>
+            <!-- Иконка для подменю -->
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/networking.png" Width="16" Height="16"/>
+          </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem IsVisible="False">
+          <MenuItem.Header>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+              <ToggleSwitch Click="OnToggleThemeClicked" VerticalAlignment="Center"  />
+            </StackPanel>
+          </MenuItem.Header>
+        </MenuItem>
+      </MenuItem>
+      
+    </Menu>
+
+    <!-- Верхний SplitView -->
+    <Grid Name="gridMain" DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <!-- Левая часть: фиксированная ширина -->
+        <ColumnDefinition Width="255" MinWidth="255"/>
+        <!-- Разделитель -->
+        <ColumnDefinition Width="Auto"/>
+        <!-- Правая часть: занимает оставшееся пространство -->
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+       
+      <!-- Левая часть: Табы -->
+      <Grid Name="gridM" Grid.Column="0" SizeChanged="Grid_SizeChanged">
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <!-- Для Label и ComboBox -->
+          <RowDefinition Height="*" />
+          <!-- Для содержимого -->
+        </Grid.RowDefinitions>
+        <Grid Margin="5,0,0,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90"/>
+            <!-- Для текста "Слой:" -->
+            <ColumnDefinition Width="*"/>
+            <!-- Для ComboBox -->
+          </Grid.ColumnDefinitions>
+          
+          <TextBlock Text="Подключение:"
+                     VerticalAlignment="Center"
+                     Margin="5,5,5,0"
+                     FontSize="12"
+                     FontFamily="Consolas"
+                     Grid.Column="0"/>
+          <ComboBox x:Name="NameBD"
+                    VerticalContentAlignment="Center" Margin="5,5,10,0"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch" Grid.Column="1" FontSize="12" FontFamily="Consolas"
+                    SelectionChanged="ConnectComboBox_SelectionChanged"/>
+        </Grid>
+     
+        <Grid Margin="5,0,0,0" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="90"/>
+              <!-- Для текста "Слой:" -->
+              <ColumnDefinition Width="*"/>
+              <!-- Для ComboBox -->
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Слой:"
+                       VerticalAlignment="Center"
+                       Margin="5,5,5,0"
+                       FontSize="12"
+                       FontFamily="Consolas"
+                       Grid.Column="0" HorizontalAlignment="Left"/>
+            <ComboBox x:Name="LayerComboBox"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      FontFamily="Consolas"
+                      FontSize="12"
+                      Grid.Column="1"
+                      Margin="5,5,10,0"/>
+          </Grid>
+        
+        
+        <TabControl Name="TabControlName" Grid.Column="0" Grid.Row="2">
+          <!-- Tab: Данные -->
+          <TabItem Header="Данные" FontSize="14" FontFamily="Consolas">
+            <DockPanel>
+              <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,5">
+              <StackPanel Orientation="Vertical">
+               
+                <Border BorderThickness="0" BorderBrush="LightGray" Margin="2,2,2,2" Padding="2,0,0,0">
+                <StackPanel Orientation="Horizontal" Height="40">
+               
+                  <Button Name="button3"  Content="📂" Width="40" Click="OpenButton_Click"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                  <!--<Button Name="button4" Content="🗑" Width="40" Click="DeleteButton_Click" Foreground="Red"/>-->
+                  <Button Name="button4"  Width="40" Click="DeleteButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/redk.png" Width="15" Height="17" />
+                  </Button>
+                  <Button Name="button2" Content="🚫" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                  <Button Name="button1" Content="✏" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                  <Button Name="button5" Content="ℹ" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                </StackPanel>
+                </Border>
+                <ListBox x:Name="DataListBox" Margin="0,5,0,5"
+                         Padding="0"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch" FontSize="12" FontFamily="Consolas">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <ListBoxItem Padding="0"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch">
+                        <!-- Add item content here, you can bind it to your data -->
+                        <TextBlock Text="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                      </ListBoxItem>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+              </Border>
+            </DockPanel>
+          </TabItem>
+
+          <!-- Tab: Объекты -->
+          <TabItem Header="Объекты" FontSize="14" FontFamily="Consolas">
+            <DockPanel>
+              <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,5">
+                <Grid>
+                  <!-- Определение строк -->
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <!-- Для панели кнопок -->
+                    <RowDefinition Height="*" />
+                    <!-- Для DataGrid -->
+                  </Grid.RowDefinitions>
+
+                  <!-- Панель кнопок -->
+                  <Border BorderThickness="0" BorderBrush="LightGray" Margin="2,2,2,2" Padding="2,0,0,0">
+                    <StackPanel Orientation="Horizontal" Height="40">
+                      <!--<Button Name="button9" Content="🗑" Width="40" Click="DeleteObjectButton_Click" Margin="5,0,0,0" />-->
+                      <Button Name="button9" Width="40" Click="DeleteObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/redk.png" Width="15" Height="17" />
+                      </Button>
+                      <Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                      <Button Name="button7" Content="🡸" Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                  </Border>
+                  
+                  <StackPanel Orientation="Vertical" Grid.Row="1">
+
+                 
+                  <!-- Список объектов -->
+                  <DataGrid IsVisible="False" x:Name="gridObjects"
+                            Grid.Row="1"
+                            ItemsSource="{Binding ObjectList}"
+                            AutoGenerateColumns="False"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Margin="1"
+                            RowDetailsVisibilityMode="VisibleWhenSelected"
+                            SelectionChanged="DataGrid_SelectionChanged">
+                   
+                    <DataGrid.Columns>
+                      <DataGridTextColumn Header="Название объекта" Binding="{Binding ObjectName}" />
+                      <DataGridTextColumn Header="Тип объекта" Binding="{Binding ObjectType}" />
+                      <DataGridTextColumn Header="Название класса" Binding="{Binding ClassName}" />
+                    </DataGrid.Columns>
+                  </DataGrid>
+
+                    <TreeView  Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged">
+                      <!-- Узел уровня ReporterNode -->
+                      <TreeView.DataTemplates>
+                        <TreeDataTemplate DataType="{x:Type local:ReporterNode}" ItemsSource="{Binding Objects}">
+                          <StackPanel Orientation="Horizontal" Margin="5">
+                            <TextBlock Text="{Binding ClassName}" FontWeight="Bold" />
+                          </StackPanel>
+                        </TreeDataTemplate>
+                        <DataTemplate DataType="{x:Type local:ReporterObject}">
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ObjectName}" />
+                            <TextBlock Text="-" />
+                            <TextBlock Text="{Binding ObjectType}" FontStyle="Italic" />
+                          </StackPanel>
+                        </DataTemplate>
+                      </TreeView.DataTemplates>
+                    </TreeView>
+                 
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DockPanel>
+          </TabItem>
+        </TabControl>
+      </Grid>
+      <!-- GridSplitter -->
+      <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext"  Background="#F0F0F0"/>
+
+      <!-- Правая часть: Панель с прокруткой -->
+      <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Panel x:Name="VisiblePanel" Margin="0,0,5,0">
+          <!-- Добавьте необходимые элементы для отображения данных -->
+        </Panel>
+      </ScrollViewer>
+    </Grid>
+  </DockPanel>
+
+</Window>
