@@ -30,18 +30,18 @@
 
     <!-- Класс объекта -->
     <TextBlock Text="Класс объекта:" Grid.Row="0" />
-    <ComboBox Name="ClassCombo" Grid.Row="1" Margin="0,5,0,5" HorizontalAlignment="Stretch" Background="#FFC0C0FF" />
+    <ComboBox Name="ClassCombo" Grid.Row="1" Margin="0,5,0,5" HorizontalAlignment="Stretch"/>
 
     <!-- Название объекта -->
     <TextBlock Text="Название объекта:" Grid.Row="2" />
-    <TextBox Name="ObjectName" Grid.Row="3" Margin="0,5,0,5" HorizontalAlignment="Stretch" Background="#C0FFC0" />
+    <TextBox Name="ObjectName" Grid.Row="3" Margin="0,5,0,5" HorizontalAlignment="Stretch"/>
 
     <!-- Чекбоксы -->
     <CheckBox Name="IsNumeric" Content="Интерпретировать значение, как число" Grid.Row="4" />
 
     <!-- Таблица -->
     <TextBlock Text="Таблица:" Grid.Row="5" />
-    <ComboBox Name="TablesCombo" Grid.Row="6" Margin="0,5,0,5" HorizontalAlignment="Stretch" Background="#FFC0C0FF" />
+    <ComboBox Name="TablesCombo" Grid.Row="6" Margin="0,5,0,5" HorizontalAlignment="Stretch"/>
 
     <!-- Вкладки -->
     <TextBlock Text="Тип и параметры объекта:" Grid.Row="7" />
@@ -67,13 +67,13 @@
     <!-- Текст выборки -->
     <TextBlock Text="Текст выборки:" Grid.Row="9" />
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="10">
-      <TextBox Name="SelectStatement" AcceptsReturn="True" HorizontalAlignment="Stretch" Background="#C0FFC0" Margin="0,5" />
+      <TextBox Name="SelectStatement" AcceptsReturn="True" HorizontalAlignment="Stretch" Margin="0,5" />
     </ScrollViewer>
 
     <!-- Условие выборки -->
     <TextBlock Text="Условие выборки:" Grid.Row="11" Margin="0,0,0,10" />
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="12" Margin="0,0,0,0">
-      <TextBox Name="WhereStatement" AcceptsReturn="True" HorizontalAlignment="Stretch" Background="#C0FFC0" />
+      <TextBox Name="WhereStatement" AcceptsReturn="True" HorizontalAlignment="Stretch"/>
     </ScrollViewer>
 
     <!-- Кнопки -->

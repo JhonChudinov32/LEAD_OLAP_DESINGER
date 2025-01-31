@@ -30,23 +30,23 @@
     <!-- Left column for source table and field -->
     <StackPanel Margin="10,10,5,10" Grid.Row="0" Grid.Column="0">
       <TextBlock Text="Исходная таблица:" />
-      <TextBox x:Name="SourceTableName" Background="#FFC0C0FF" Margin="0,0,0,10" IsReadOnly="True" IsHitTestVisible="False"/>
+      <TextBox x:Name="SourceTableName"  Margin="0,0,0,10" IsReadOnly="True" IsHitTestVisible="False"/>
       <TextBlock Text="Имя поля:" />
-      <TextBox x:Name="SourceColumnName" Background="#FFC0C0FF" IsReadOnly="True" IsHitTestVisible="False"/>
+      <TextBox x:Name="SourceColumnName" IsReadOnly="True" IsHitTestVisible="False"/>
     </StackPanel>
 
     <!-- Right column for target table and field -->
     <StackPanel Margin="5,10,10,10" Grid.Row="0" Grid.Column="1">
       <TextBlock Text="Целевая таблица:" />
-      <TextBox x:Name="TargetTableName" Background="#FFC0C0FF" Margin="0,0,0,10" IsReadOnly="True" IsHitTestVisible="False"/>
+      <TextBox x:Name="TargetTableName" Margin="0,0,0,10" IsReadOnly="True" IsHitTestVisible="False"/>
       <TextBlock Text="Имя поля:" />
-      <TextBox x:Name="TargetColumnName" Background="#FFC0C0FF" IsReadOnly="True" IsHitTestVisible="False"/>
+      <TextBox x:Name="TargetColumnName"  IsReadOnly="True" IsHitTestVisible="False"/>
     </StackPanel>
 
     <!-- Join Type and Condition across both columns -->
     <StackPanel Margin="10,0,10,10" Grid.Row="1" Grid.ColumnSpan="2">
       <TextBlock Text="Тип соединения:" />
-      <ListBox x:Name="JoinsList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" FontFamily="Consolas" Background="#C0FFC0">
+      <ListBox x:Name="JoinsList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" FontFamily="Consolas">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <ListBoxItem Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -58,7 +58,7 @@
 
       <TextBlock Text="Условия соединения:" Margin="10,10,10,0"/>
       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,0,0,0">
-      <TextBox x:Name="JoinCondition" Background="#C0FFC0"/>
+      <TextBox x:Name="JoinCondition" />
       </ScrollViewer>
     </StackPanel>
 

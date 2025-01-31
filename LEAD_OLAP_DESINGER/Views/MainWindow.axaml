@@ -136,14 +136,14 @@
                 <Border BorderThickness="0" BorderBrush="LightGray" Margin="2,2,2,2" Padding="2,0,0,0">
                 <StackPanel Orientation="Horizontal" Height="40">
                
-                  <Button Name="button3"  Content="📂" Width="40" Click="OpenButton_Click"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                  <Button Name="button3"  Content="📂" Width="40" Click="OpenButton_Click"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>
                   <!--<Button Name="button4" Content="🗑" Width="40" Click="DeleteButton_Click" Foreground="Red"/>-->
-                  <Button Name="button4"  Width="40" Click="DeleteButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                  <Button Name="button4"  Width="40" Click="DeleteButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
                     <Image Source="avares://LEAD_OLAP_DESINGER/Assets/redk.png" Width="15" Height="17" />
                   </Button>
-                  <Button Name="button2" Content="🚫" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                  <Button Name="button1" Content="✏" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                  <Button Name="button5" Content="ℹ" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                  <Button Name="button2" Content="🚫" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>
+                  <Button Name="button1" Content="✏" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>
+                  <Button Name="button5" Content="ℹ" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>
                 </StackPanel>
                 </Border>
                 <ListBox x:Name="DataListBox" Margin="0,5,0,5"
@@ -183,11 +183,11 @@
                   <Border BorderThickness="0" BorderBrush="LightGray" Margin="2,2,2,2" Padding="2,0,0,0">
                     <StackPanel Orientation="Horizontal" Height="40">
                       <!--<Button Name="button9" Content="🗑" Width="40" Click="DeleteObjectButton_Click" Margin="5,0,0,0" />-->
-                      <Button Name="button9" Width="40" Click="DeleteObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                      <Button Name="button9" Width="40" Click="DeleteObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
                         <Image Source="avares://LEAD_OLAP_DESINGER/Assets/redk.png" Width="15" Height="17" />
                       </Button>
-                      <Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                      <Button Name="button7" Content="🡸" Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                      <Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>
+                      <Button Name="button7" Content="🡸" Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>
                     </StackPanel>
                   </Border>
                   
@@ -211,25 +211,59 @@
                       <DataGridTextColumn Header="Название класса" Binding="{Binding ClassName}" />
                     </DataGrid.Columns>
                   </DataGrid>
+                    <Grid>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <!-- Для панели кнопок -->
+                        <RowDefinition Height="*" />
+                        <!-- Для DataGrid -->
+                      </Grid.RowDefinitions>
+                      <!-- Заголовки таблицы -->
+                      <Grid Grid.Row="0" Margin="5,5,5,5" IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*"/>
+                          <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TreeView  Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged">
-                      <!-- Узел уровня ReporterNode -->
-                      <TreeView.DataTemplates>
-                        <TreeDataTemplate DataType="{x:Type local:ReporterNode}" ItemsSource="{Binding Objects}">
-                          <StackPanel Orientation="Horizontal" Margin="5">
-                            <TextBlock Text="{Binding ClassName}" FontWeight="Bold" />
-                          </StackPanel>
-                        </TreeDataTemplate>
-                        <DataTemplate DataType="{x:Type local:ReporterObject}">
-                          <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding ObjectName}" />
-                            <TextBlock Text="-" />
-                            <TextBlock Text="{Binding ObjectType}" FontStyle="Italic" />
-                          </StackPanel>
-                        </DataTemplate>
-                      </TreeView.DataTemplates>
-                    </TreeView>
-                 
+                        <Border Grid.Column="0" BorderBrush="{DynamicResource TextControlBorderBrushFocused}" Background="{DynamicResource BorderColor}" BorderThickness="1" Padding="5" HorizontalAlignment="Stretch">
+                          <TextBlock Text="Название объекта" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,40,0"/>
+                        </Border>
+                        <Border Grid.Column="1" BorderBrush="{DynamicResource TextControlBorderBrushFocused}" Background="{DynamicResource BorderColor}" BorderThickness="1" Padding="5" HorizontalAlignment="Stretch">
+                          <TextBlock Text="Тип объекта" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="20,0,40,0"/>
+                        </Border>
+                      </Grid>
+
+                      <!-- TreeView с таблицей -->
+                     
+                      <TreeView Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged"
+                                Grid.Row="1" Margin="5,0,5,5"  Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}">
+                        <TreeView.DataTemplates>
+                          <!-- Узел уровня ReporterNode -->
+                          <TreeDataTemplate DataType="{x:Type local:ReporterNode}" ItemsSource="{Binding Objects}">
+                            <StackPanel>
+                              <TextBlock Text="{Binding ClassName}" FontWeight="Bold" FontSize="14" Margin="5"/>
+                            </StackPanel>
+                          </TreeDataTemplate>
+
+                          <!-- Вложенные элементы как строки таблицы -->
+                          
+                          <DataTemplate DataType="{x:Type local:ReporterObject}">
+                          
+                            <Grid IsSharedSizeScope="True">
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="{Binding ObjectName}" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                              <TextBlock Text="{Binding ObjectType}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            </Grid>
+                          
+                          </DataTemplate>
+                         
+                        </TreeView.DataTemplates>
+                      </TreeView>
+                    
+                    </Grid>
                   </StackPanel>
                 </Grid>
               </Border>
