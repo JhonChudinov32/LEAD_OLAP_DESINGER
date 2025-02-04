@@ -18,23 +18,21 @@ using Avalonia.Styling;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using System.Collections;
-using System.Data.Common;
 using Avalonia.Threading;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data;
-using Avalonia.Media.TextFormatting;
 using static LEAD_OLAP_DESINGER.Models.DBParameters;
 using Npgsql;
 using System.Collections.Generic;
-using System.Windows.Input;
-using System.Runtime.InteropServices;
 using System.ComponentModel;
 using LEAD_OLAP_DESINGER.Helpers;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Avalonia.Themes.Fluent;
-using System.Security.AccessControl;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Presenters;
+using Avalonia.VisualTree;
+using Tmds.DBus.Protocol;
 
 
 namespace LEAD_OLAP_DESINGER.Views
@@ -71,6 +69,9 @@ namespace LEAD_OLAP_DESINGER.Views
         private ToolTip? DropJoinTip;
         private ToolTip? JoinListTip;
         private ToolTip? EditJoinTip;
+        private ToolTip? DropObjectTip;
+        private ToolTip? EditObjectTip;
+        private ToolTip? BackObjectTip;
 
         private ReporterObject selectedObject;
         public DataGrid? gridObj;
@@ -125,6 +126,9 @@ namespace LEAD_OLAP_DESINGER.Views
             SetToolTip("button2", DropJoinTip);
             SetToolTip("DataListBox", JoinListTip);
             SetToolTip("button1", EditJoinTip);
+            SetToolTip("button9", DropObjectTip);
+            SetToolTip("button6", EditObjectTip);
+            SetToolTip("button7", BackObjectTip);
 
             MainWindowViewModel.StaticPropertyChanged += OnTitleChanged;
 
@@ -449,6 +453,8 @@ namespace LEAD_OLAP_DESINGER.Views
 
 
             // Инициализация подсказок
+
+            //Для Данных
             NewTableTip = new ToolTip { Content = "Добавить таблицу" };
             DropTableTip = new ToolTip { Content = "Удалить таблицу" };
             LoadStructureTip = new ToolTip { Content = "Перезагрузить данные из базы" };
@@ -456,6 +462,10 @@ namespace LEAD_OLAP_DESINGER.Views
             JoinListTip = new ToolTip { Content = "Список связей для выбранной таблицы" };
             EditJoinTip = new ToolTip { Content = "Изменить параметры выбранной связи" };
 
+            //Для объектов
+            DropObjectTip = new ToolTip { Content = "Удалить выбранный объект" };
+            EditObjectTip = new ToolTip { Content = "Изменить параметры объекта" };
+            BackObjectTip = new ToolTip { Content = "Создать объект" };
         }
 
         private void SetToolTip(string controlName, ToolTip toolTip)
@@ -820,7 +830,7 @@ namespace LEAD_OLAP_DESINGER.Views
                         string objectQuery = @"SELECT a.tid, a.ObjectName, 
                                    a.ReporterDimension_id, a.ReporterMeasure_id, 
                                    a.ReporterDetail_id, a.ReporterClass_id, b.ClassName,
-                                   ISNULL(a.IsNumeric, 0) 
+                                   ISNULL(a.IsNumeric, 0), a.ObjectDescription
                                    FROM ReporterObjects AS a WITH (NOLOCK) 
                                    JOIN ReporterClasses AS b WITH (NOLOCK) 
                                    ON a.ReporterClass_id = b.tid 
@@ -847,6 +857,7 @@ namespace LEAD_OLAP_DESINGER.Views
                                         ReporterClass_id = objectReader.GetInt32(5),
                                         ClassName = objectReader.GetString(6),
                                         IsNumeric = objectReader.GetInt32(7) == 1,
+                                        ObjectDescription = objectReader.GetString(8),
                                     };
 
                                     reporterObject.ObjectType = reporterObject.ReporterDimension_id > -1 ? "Измерение" :
@@ -858,9 +869,18 @@ namespace LEAD_OLAP_DESINGER.Views
                                    MainWindowViewModel.ObjectList.Add(reporterObject);
                                 }
                                 MainWindowViewModel m = new MainWindowViewModel();
+                               
                                 m.League = m.GroupObjectsByClassName(MainWindowViewModel.ObjectList);
+
+                                var header = new HeaderNode();
+
+                                // Добавляем заголовок в список
+
+                                m.League.Insert(0, header);
+
                                 treeObj.ItemsSource = m.League;
                             }
+
                         }
 
                         if (MainWindowViewModel.ObjectList.Count > 0)
@@ -907,7 +927,7 @@ namespace LEAD_OLAP_DESINGER.Views
                         string objectQuery = @"SELECT a.tid, a.ObjectName, 
                           a.ReporterDimension_id, a.ReporterMeasure_id, 
                           a.ReporterDetail_id, a.ReporterClass_id, b.ClassName,
-                          COALESCE(a.IsNumeric, 0) 
+                          COALESCE(a.IsNumeric, 0), a.ObjectDescription 
                           FROM ReporterObjects AS a 
                           JOIN ReporterClasses AS b ON a.ReporterClass_id = b.tid
                           WHERE a.system_id = @system_id 
@@ -932,7 +952,8 @@ namespace LEAD_OLAP_DESINGER.Views
                                         ReporterDetail_id = objectReader.IsDBNull(4) ? -1 : objectReader.GetInt32(4),
                                         ReporterClass_id = objectReader.GetInt32(5),
                                         ClassName = objectReader.GetString(6),
-                                        IsNumeric = objectReader.GetInt32(7) == 1
+                                        IsNumeric = objectReader.GetInt32(7) == 1,
+                                        ObjectDescription = objectReader.GetString(8),
                                     };
 
                                     reporterObject.ObjectType = reporterObject.ReporterDimension_id > -1 ? "Измерение" :
@@ -942,7 +963,14 @@ namespace LEAD_OLAP_DESINGER.Views
                                     MainWindowViewModel.ObjectList.Add(reporterObject);
                                 }
                                 MainWindowViewModel m = new MainWindowViewModel();
+                               
+                              
                                 m.League = m.GroupObjectsByClassName(MainWindowViewModel.ObjectList);
+
+                                var header = new HeaderNode();
+
+                                m.League.Insert(0, header);
+
                                 treeObj.ItemsSource = m.League;
                             }
                         }
@@ -964,6 +992,17 @@ namespace LEAD_OLAP_DESINGER.Views
                 MessageDialog.Show("General Error", $"Ошибка: {ex.Message}");
             }
         }
+
+
+        private void HeaderGrid_SizeChanged(object? sender, SizeChangedEventArgs e)
+        {
+            if (DataContext is MainWindowViewModel vm)
+            {
+               vm.UpdateColumnWidths(e.NewSize.Width);
+            }
+        }
+
+
 
         /// <summary>
         /// Загрузка таблиц
@@ -1078,7 +1117,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(1),
                 Width = 150,
-                Height = 200
+                Height = 204
             };
 
             if (x == -1) x = 100;
@@ -1101,7 +1140,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 Background = new SolidColorBrush(secondaryColor),
                 BorderBrush = new SolidColorBrush(borderColor),
                 BorderThickness = new Thickness(1),
-                Height = 25,
+                Height = 30,
                 Tag = "PANEL_TITLE"
             };
             titlePanel.PointerPressed += ThisMouseDown;
@@ -1122,9 +1161,9 @@ namespace LEAD_OLAP_DESINGER.Views
             // Заголовок панели
             var newLabel = new TextBlock
             {
-                Text = panelName,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                Text = panelName + "\n" + "(" + tableName + ")",
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
                 FontFamily = new FontFamily("Consolas"),
                 FontWeight = FontWeight.ExtraBlack,
                 FontSize = 12,
@@ -1203,8 +1242,169 @@ namespace LEAD_OLAP_DESINGER.Views
             };
         }
 
-        // Метод для безопасного извлечения цвета из ресурсов
-       
+      
+        public CustomPanelReturn CreateCustomPanel2(string panelName, object parentObject, string tableName, int x, int y, int tableId)
+        {
+            var secondaryColor = Color.Parse("#7a9fff");
+            var backgroundColor = Color.Parse("#f0f4f8");
+            var borderColor = Color.Parse("#D1D1D1");
+            var textColor = Color.Parse("#120033");
+            var itemTextColor = Color.Parse("#5C5C5C");
+
+            var thisPanel = new Border
+            {
+                Background = Brushes.Transparent,
+                BorderBrush = new SolidColorBrush(secondaryColor),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(1),
+                Width = 150,
+                Height = 204
+            };
+
+            if (x == -1) x = 100;
+            if (y == -1) y = 100;
+
+            Canvas.SetLeft(thisPanel, x);
+            Canvas.SetTop(thisPanel, y);
+
+            var thisTag = new PanelTag
+            {
+                Table_id = tableId,
+                TableName = tableName,
+                TableAlias = panelName
+            };
+            thisPanel.Tag = thisTag;
+
+            var titlePanel = new Border
+            {
+                Background = new SolidColorBrush(secondaryColor),
+                BorderBrush = new SolidColorBrush(borderColor),
+                BorderThickness = new Thickness(1),
+                Height = 30,
+                Tag = "PANEL_TITLE"
+            };
+            titlePanel.PointerPressed += ThisMouseDown;
+            titlePanel.PointerReleased += ThisMouseUp;
+            titlePanel.PointerMoved += ThisMouseMove;
+
+            var contentPanel = new Border
+            {
+                Background = new SolidColorBrush(backgroundColor),
+                BorderBrush = new SolidColorBrush(borderColor),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(1),
+                Height = 170,
+                Tag = "content"
+            };
+
+            var newLabel = new TextBlock
+            {
+                Text = panelName + "\n" + "(" + tableName + ")",
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                FontFamily = new FontFamily("Consolas"),
+                FontWeight = FontWeight.ExtraBlack,
+                FontSize = 12,
+                Foreground = new SolidColorBrush(textColor)
+            };
+
+            titlePanel.Child = newLabel;
+
+            var newBox = new ListBox
+            {
+                BorderBrush = null,
+                Background = new SolidColorBrush(backgroundColor),
+            };
+
+            newBox.Padding = new Thickness(0);
+            newBox.ItemTemplate = new FuncDataTemplate<object>((item, provider) =>
+            {
+                var listBoxItem = new ListBoxItem
+                {
+                    Content = item,
+                    Padding = new Thickness(0, 0, 0, 0),
+                    Tag = "DRAGDROP_ELEMENT",
+                    FontFamily = new FontFamily("Consolas"),
+                    FontSize = 12,
+                    Foreground = new SolidColorBrush(itemTextColor),
+                };
+
+                listBoxItem.PointerPressed += ThisMouseDown;
+                listBoxItem.PointerReleased += ThisMouseUp;
+                listBoxItem.PointerMoved += ThisMouseMove;
+                listBoxItem.AddHandler(DragDrop.DragOverEvent, ThisDragOver, RoutingStrategies.Bubble);
+                listBoxItem.AddHandler(DragDrop.DropEvent, ThisDragDrop, RoutingStrategies.Bubble);
+                listBoxItem.AddHandler(DragDrop.DragLeaveEvent, ThisDragLeave, RoutingStrategies.Bubble);
+
+                return listBoxItem;
+            });
+
+            var itemStyle = new Style(x => x.OfType<ListBoxItem>())
+            {
+                Setters =
+                {
+                    new Setter(ListBoxItem.PaddingProperty, new Thickness(0, 0, 0, 0))
+                }
+            };
+
+            newBox.Styles.Add(itemStyle);
+            DragDrop.SetAllowDrop(newBox, true);
+            FillListBoxWithColumns(newBox, tableName);
+            contentPanel.Child = newBox;
+
+
+
+            var mainGrid = new Grid();
+            mainGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto)); // Заголовок
+            mainGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star)); // Контент
+
+            // Добавляем заголовок
+            Grid.SetRow(titlePanel, 0);
+            mainGrid.Children.Add(titlePanel);
+
+            // Добавляем контент
+            Grid.SetRow(contentPanel, 1);
+            mainGrid.Children.Add(contentPanel);
+
+            // Thumb для изменения размеров
+            var resizeThumb = new Thumb
+            {
+                Width = 10,
+                Height = 10,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Background = new SolidColorBrush(Colors.Red),
+                Cursor = new Cursor(StandardCursorType.SizeAll) // Изменяем курсор
+            };
+
+            // Обработчик изменения размеров
+            resizeThumb.DragDelta += (s, e) =>
+            {
+                double newWidth = thisPanel.Width + e.Vector.X;
+                double newHeight = thisPanel.Height + e.Vector.Y;
+
+                if (newWidth > 150) thisPanel.Width = newWidth;
+                if (newHeight > 200) thisPanel.Height = newHeight;
+            };
+
+            // Добавляем `Thumb` в `Grid`
+            mainGrid.Children.Add(resizeThumb);
+
+            thisPanel.Child = mainGrid;
+            thisPanel.PointerMoved += ThisMouseMove;
+
+            if (parentObject is ILogical parent)
+            {
+                (parent as Panel)?.Children.Add(thisPanel);
+            }
+
+            return new CustomPanelReturn
+            {
+                ThisPanel = thisPanel,
+                ThisListBox = newBox
+            };
+        }
+
         public CustomPanelReturn CreateCustomPanel1(string panelName, object parentObject, string tableName, int x, int y, int tableId)
         {
             // Новый объект "Таблица"
@@ -3072,11 +3272,21 @@ namespace LEAD_OLAP_DESINGER.Views
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             if (gridObj.SelectedItem is ReporterObject selectedItem)
             {
                // MessageDialog.Show("",selectedItem.ObjectName.ToString());
                 // Обработать выбранный элемент
                 selectedObject =  selectedItem;
+            }
+
+            if (treeObj.SelectedItem is HeaderNode)
+            {
+                treeObj.SelectedItem = null; // Сбрасываем выделение
+            }
+            if (treeObj.SelectedItem is ReporterNode)
+            {
+                treeObj.SelectedItem = null; // Сбрасываем выделение
             }
 
             if (treeObj.SelectedItem is ReporterObject selectedItemtr)

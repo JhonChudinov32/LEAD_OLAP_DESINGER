@@ -19,7 +19,44 @@ namespace LEAD_OLAP_DESINGER.ViewModels
 {
 public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     {
-      
+        private GridLength _column1Width = new GridLength(50, GridUnitType.Star);
+        public GridLength Column1Width
+        {
+            get => _column1Width;
+            set
+            {
+                _column1Width = value;
+                OnPropertyChanged(nameof(Column1Width));
+            }
+        }
+
+        private GridLength _column2Width = new GridLength(50, GridUnitType.Star);
+        public GridLength Column2Width
+        {
+            get => _column2Width;
+            set
+            {
+                _column2Width = value;
+                OnPropertyChanged(nameof(Column2Width));
+            }
+        }
+
+        private GridLength _column3Width = new GridLength(50, GridUnitType.Star);
+        public GridLength Column3Width
+        {
+            get => _column3Width;
+            set
+            {
+                _column3Width = value;
+                OnPropertyChanged(nameof(Column3Width));
+            }
+        }
+        public void UpdateColumnWidths(double totalWidth)
+        {
+            Column1Width = new GridLength(totalWidth * 0.3, GridUnitType.Pixel);
+            Column2Width = new GridLength(totalWidth * 0.4, GridUnitType.Pixel);
+            Column3Width = new GridLength(totalWidth * 0.3, GridUnitType.Pixel);
+        }
 
         [ObservableProperty]
         List<ThemeVariantInfo> themeVariants;
@@ -64,9 +101,9 @@ public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
 
         //public ObservableCollection<ReporterNode> League { get; set; } = new ObservableCollection<ReporterNode>();
 
-        private ObservableCollection<ReporterNode> _League;
+        private ObservableCollection<object> _League;
 
-        public ObservableCollection<ReporterNode> League
+        public ObservableCollection<object> League
         {
             get => _League;
             set
@@ -76,7 +113,7 @@ public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
             }
         }
 
-        public ObservableCollection<ReporterNode> GroupObjectsByClassName(IEnumerable<ReporterObject> objects)
+        public ObservableCollection<object> GroupObjectsByClassName(IEnumerable<ReporterObject> objects)
         {
             var grouped = objects
                 .GroupBy(o => o.ClassName)
@@ -94,8 +131,10 @@ public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
             //    }
             //}
 
-            return new ObservableCollection<ReporterNode>(grouped);
+            return new ObservableCollection<object>(grouped);
         }
+
+       
 
         public static ObservableCollection<string> Platforms { get; set; } = new ObservableCollection<string>();
 

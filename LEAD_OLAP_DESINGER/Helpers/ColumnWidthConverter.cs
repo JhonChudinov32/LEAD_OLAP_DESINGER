@@ -20,6 +20,7 @@ namespace LEAD_OLAP_DESINGER.Helpers
             return 0;
         }
 
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();

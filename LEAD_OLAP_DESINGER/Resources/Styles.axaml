@@ -150,6 +150,13 @@
     <Setter Property="BorderThickness" Value="0"/>
     <Setter Property="Padding" Value="0"/>
   </Style>
+  <Style Selector="TreeViewItem">
+    <Setter Property="Padding" Value="3"/>
+    <Setter Property="Margin" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="CornerRadius" Value="5"/>
+  </Style>
+ 
   <!--  PointerOver state  -->
   <Style Selector="TreeViewItem /template/ Border#PART_LayoutRoot:pointerover">
     <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
@@ -167,6 +174,7 @@
   <Style Selector="TreeViewItem:pressed /template/ Border#PART_LayoutRoot:pointerover > ContentPresenter#PART_HeaderPresenter">
     <Setter Property="Foreground" Value="{DynamicResource SystemControlHighlightAltBaseHighBrush}" />
   </Style>
+
 
   <!-- Стиль для DataGrid -->
   <Style Selector="DataGrid">

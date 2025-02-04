@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Xml.Linq;
-
-namespace LEAD_OLAP_DESINGER.Models
+﻿namespace LEAD_OLAP_DESINGER.Models
 {
     public class ReporterObject
     {
@@ -14,7 +11,7 @@ namespace LEAD_OLAP_DESINGER.Models
         public bool IsNumeric { get; set; } // Признак, является ли объект числовым
         public string ObjectType { get; set; } // Тип объекта (например, "Измерение", "Мера", "Деталь")
         public string ClassName { get; set; } // Название класса
+        public string ObjectDescription { get; set; }
         public int  ItemIndex { get; set; }
-
     }
 }
