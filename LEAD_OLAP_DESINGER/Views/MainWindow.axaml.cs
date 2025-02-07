@@ -1002,8 +1002,6 @@ namespace LEAD_OLAP_DESINGER.Views
             }
         }
 
-
-
         /// <summary>
         /// Загрузка таблиц
         /// </summary>
@@ -1098,7 +1096,7 @@ namespace LEAD_OLAP_DESINGER.Views
         /// <summary>
         /// Создание полной панели объектов
         /// </summary>
-        public CustomPanelReturn CreateCustomPanel(string panelName, object parentObject, string tableName, int x, int y, int tableId)
+        public CustomPanelReturn CreateCustomPanel_Old(string panelName, object parentObject, string tableName, int x, int y, int tableId)
         {
             // Получаем ресурс для цвета
             // Получаем ресурсы цветов
@@ -1166,7 +1164,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 HorizontalAlignment = HorizontalAlignment.Left,
                 FontFamily = new FontFamily("Consolas"),
                 FontWeight = FontWeight.ExtraBlack,
-                FontSize = 12,
+                FontSize = 11,
                 Foreground = new SolidColorBrush(textColor) // Apply text color
             };
 
@@ -1188,7 +1186,7 @@ namespace LEAD_OLAP_DESINGER.Views
                     Padding = new Thickness(0, 0, 0, 0),
                     Tag = "DRAGDROP_ELEMENT",
                     FontFamily = new FontFamily("Consolas"),
-                    FontSize = 12,
+                    FontSize = 11,
                     Foreground = new SolidColorBrush(itemTextColor), // Apply item text color
                 };
 
@@ -1242,18 +1240,19 @@ namespace LEAD_OLAP_DESINGER.Views
             };
         }
 
-      
-        public CustomPanelReturn CreateCustomPanel2(string panelName, object parentObject, string tableName, int x, int y, int tableId)
+        public CustomPanelReturn CreateCustomPanel(string panelName, object parentObject, string tableName, int x, int y, int tableId)
         {
+            // Получаем ресурсы цветов
             var secondaryColor = Color.Parse("#7a9fff");
             var backgroundColor = Color.Parse("#f0f4f8");
             var borderColor = Color.Parse("#D1D1D1");
             var textColor = Color.Parse("#120033");
             var itemTextColor = Color.Parse("#5C5C5C");
 
+            // Новый объект "Таблица"
             var thisPanel = new Border
             {
-                Background = Brushes.Transparent,
+                Background = Brushes.Transparent, // Transparent to reflect the new color scheme
                 BorderBrush = new SolidColorBrush(secondaryColor),
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(1),
@@ -1275,6 +1274,20 @@ namespace LEAD_OLAP_DESINGER.Views
             };
             thisPanel.Tag = thisTag;
 
+            // Создаем Grid для размещения панели
+            var grid = new Grid
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+
+            // Определяем две строки для панели (одна для заголовка, другая для контента)
+            var titleRow = new RowDefinition { Height = new GridLength(30) };  // Заголовок
+            var contentRow = new RowDefinition { Height = new GridLength(170, GridUnitType.Pixel) };  // Контент
+            grid.RowDefinitions.Add(titleRow);
+            grid.RowDefinitions.Add(contentRow);
+
+            // Панель заголовка
             var titlePanel = new Border
             {
                 Background = new SolidColorBrush(secondaryColor),
@@ -1287,6 +1300,21 @@ namespace LEAD_OLAP_DESINGER.Views
             titlePanel.PointerReleased += ThisMouseUp;
             titlePanel.PointerMoved += ThisMouseMove;
 
+            // Заголовок панели
+            var newLabel = new TextBlock
+            {
+                Text = panelName + "\n" + "(" + tableName + ")",
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                FontFamily = new FontFamily("Consolas"),
+                FontWeight = FontWeight.ExtraBlack,
+                FontSize = 11,
+                Foreground = new SolidColorBrush(textColor) // Apply text color
+            };
+
+            titlePanel.Child = newLabel;
+
+            // Панель содержания объекта
             var contentPanel = new Border
             {
                 Background = new SolidColorBrush(backgroundColor),
@@ -1297,35 +1325,25 @@ namespace LEAD_OLAP_DESINGER.Views
                 Tag = "content"
             };
 
-            var newLabel = new TextBlock
-            {
-                Text = panelName + "\n" + "(" + tableName + ")",
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                FontFamily = new FontFamily("Consolas"),
-                FontWeight = FontWeight.ExtraBlack,
-                FontSize = 12,
-                Foreground = new SolidColorBrush(textColor)
-            };
-
-            titlePanel.Child = newLabel;
-
+            // Список для отображения данных
             var newBox = new ListBox
             {
                 BorderBrush = null,
                 Background = new SolidColorBrush(backgroundColor),
+                Padding = new Thickness(0),
+                VerticalAlignment = VerticalAlignment.Stretch,  // Обеспечиваем растяжение по вертикали
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
-            newBox.Padding = new Thickness(0);
             newBox.ItemTemplate = new FuncDataTemplate<object>((item, provider) =>
             {
                 var listBoxItem = new ListBoxItem
                 {
                     Content = item,
-                    Padding = new Thickness(0, 0, 0, 0),
+                    Padding = new Thickness(0),
                     Tag = "DRAGDROP_ELEMENT",
                     FontFamily = new FontFamily("Consolas"),
-                    FontSize = 12,
+                    FontSize = 11,
                     Foreground = new SolidColorBrush(itemTextColor),
                 };
 
@@ -1339,199 +1357,89 @@ namespace LEAD_OLAP_DESINGER.Views
                 return listBoxItem;
             });
 
+            // Применяем стиль к ListBoxItem
             var itemStyle = new Style(x => x.OfType<ListBoxItem>())
             {
                 Setters =
                 {
-                    new Setter(ListBoxItem.PaddingProperty, new Thickness(0, 0, 0, 0))
+                    new Setter(ListBoxItem.PaddingProperty, new Thickness(0))
                 }
             };
 
             newBox.Styles.Add(itemStyle);
             DragDrop.SetAllowDrop(newBox, true);
+
             FillListBoxWithColumns(newBox, tableName);
+
             contentPanel.Child = newBox;
 
+            // Добавляем панели в Grid
+            grid.Children.Add(titlePanel);
+            Grid.SetRow(titlePanel, 0);  // Заголовок
+            grid.Children.Add(contentPanel);
+            Grid.SetRow(contentPanel, 1);  // Контент
 
-
-            var mainGrid = new Grid();
-            mainGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto)); // Заголовок
-            mainGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star)); // Контент
-
-            // Добавляем заголовок
-            Grid.SetRow(titlePanel, 0);
-            mainGrid.Children.Add(titlePanel);
-
-            // Добавляем контент
-            Grid.SetRow(contentPanel, 1);
-            mainGrid.Children.Add(contentPanel);
-
-            // Thumb для изменения размеров
-            var resizeThumb = new Thumb
+            // Добавляем элемент для изменения размера в правый нижний угол
+            var resizeHandle = new Border
             {
-                Width = 10,
-                Height = 10,
-                HorizontalAlignment = HorizontalAlignment.Right,
+                Background = new SolidColorBrush(borderColor),
+                Width = 5,
+                Height = 5,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                Background = new SolidColorBrush(Colors.Red),
-                Cursor = new Cursor(StandardCursorType.SizeAll) // Изменяем курсор
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Cursor = new Cursor(StandardCursorType.SizeAll)
             };
 
-            // Обработчик изменения размеров
-            resizeThumb.DragDelta += (s, e) =>
-            {
-                double newWidth = thisPanel.Width + e.Vector.X;
-                double newHeight = thisPanel.Height + e.Vector.Y;
+            grid.Children.Add(resizeHandle);
+            Grid.SetRow(resizeHandle, 1); // Разместим его в нижней части контента
 
-                if (newWidth > 150) thisPanel.Width = newWidth;
-                if (newHeight > 200) thisPanel.Height = newHeight;
+            // Перетаскивание для изменения размеров панели
+            bool isResizing = false;
+            double lastMouseX = 0, lastMouseY = 0;
+
+            resizeHandle.PointerPressed += (sender, e) =>
+            {
+                isResizing = true;
+                lastMouseX = e.GetPosition(thisPanel).X;
+                lastMouseY = e.GetPosition(thisPanel).Y;
             };
 
-            // Добавляем `Thumb` в `Grid`
-            mainGrid.Children.Add(resizeThumb);
-
-            thisPanel.Child = mainGrid;
-            thisPanel.PointerMoved += ThisMouseMove;
-
-            if (parentObject is ILogical parent)
+            resizeHandle.PointerMoved += (sender, e) =>
             {
-                (parent as Panel)?.Children.Add(thisPanel);
-            }
-
-            return new CustomPanelReturn
-            {
-                ThisPanel = thisPanel,
-                ThisListBox = newBox
-            };
-        }
-
-        public CustomPanelReturn CreateCustomPanel1(string panelName, object parentObject, string tableName, int x, int y, int tableId)
-        {
-            // Новый объект "Таблица"
-            var thisPanel = new Border
-            {
-                Background = Brushes.BurlyWood,
-                BorderBrush = Brushes.Gray,
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(1),
-                Width = 150,
-                Height = 200
-            };
-
-            if (x == -1) x = 100;
-            if (y == -1) y = 100;
-
-            Canvas.SetLeft(thisPanel, x);
-            Canvas.SetTop(thisPanel, y);
-
-            var thisTag = new PanelTag
-            {
-                Table_id = tableId,
-                TableName = tableName,
-                TableAlias = panelName
-            };
-            thisPanel.Tag = thisTag;
-
-            // Панель заголовка объекта
-            var titlePanel = new Border
-            {
-                Background = Brushes.SandyBrown,
-                BorderBrush = Brushes.Gray,
-                BorderThickness = new Thickness(1),
-                Height = 25,
-                Tag = "PANEL_TITLE"
-            };
-            titlePanel.PointerPressed += ThisMouseDown;
-            titlePanel.PointerReleased += ThisMouseUp;
-            titlePanel.PointerMoved += ThisMouseMove;
-
-            // Панель содержания объекта
-            var contentPanel = new Border
-            {
-                Background = Brushes.PeachPuff,
-                BorderBrush = Brushes.Gray,
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(1),
-                Height = 170,
-                Tag = "content"
-            };
-
-            // Заголовок панели
-            var newLabel = new TextBlock
-            {
-                Text = panelName,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                FontFamily = new FontFamily("Consolas"),
-                FontWeight = FontWeight.ExtraBlack,
-                FontSize = 12,
-               
-            };
-
-            titlePanel.Child = newLabel;
-
-            // Перечень полей
-            var newBox = new ListBox
-            {
-                BorderBrush = null,
-                Background = Brushes.PeachPuff,
-            };
-            newBox.Padding = new Thickness(0); // Убираем отступы у самого ListBox
-
-            newBox.ItemTemplate = new FuncDataTemplate<object>((item, provider) =>
-            {
-                var listBoxItem = new ListBoxItem
+                if (isResizing)
                 {
-                    Content = item,
-                    Padding = new Thickness(0, 0, 0, 0),
-                    Tag = "DRAGDROP_ELEMENT",
-                    FontFamily = new FontFamily("Consolas"),
-                    FontSize = 12,
-                };
+                    var deltaX = e.GetPosition(thisPanel).X - lastMouseX;
+                    var deltaY = e.GetPosition(thisPanel).Y - lastMouseY;
 
-                // Подключаем обработчик события PointerPressed для ListBoxItem
-                listBoxItem.PointerPressed += ThisMouseDown;
-                listBoxItem.PointerReleased += ThisMouseUp;
-                listBoxItem.PointerMoved += ThisMouseMove;
-                listBoxItem.AddHandler(DragDrop.DragOverEvent, ThisDragOver, RoutingStrategies.Bubble);
-                listBoxItem.AddHandler(DragDrop.DropEvent, ThisDragDrop, RoutingStrategies.Bubble);
-                listBoxItem.AddHandler(DragDrop.DragLeaveEvent, ThisDragLeave, RoutingStrategies.Bubble);
+                    // Изменяем размеры панели
+                    var newWidth = Math.Max(150, thisPanel.Width + deltaX);  // Ширина
+                    var newHeight = Math.Max(50, thisPanel.Height + deltaY); // Высота
 
-               
+                    thisPanel.Width = newWidth;
+                    thisPanel.Height = newHeight;
 
-                return listBoxItem;
-            });
+                    // Обновляем размеры контента и заголовка в Grid
+                    contentRow.Height = new GridLength(newHeight - 30);  // Обновляем высоту контента
+                    titleRow.Height = new GridLength(30);  // Заголовок остается фиксированным
 
+                    // Обновляем размер ListBox
+                    newBox.Height = newHeight - 30;  // Это важный момент для растягивания ListBox
 
-            // Настраиваем стиль для элементов списка (ListBoxItem)
-            var itemStyle = new Style(x => x.OfType<ListBoxItem>())
-            {
-                Setters =
-                        {
-                            new Setter(ListBoxItem.PaddingProperty, new Thickness(0, 0, 0, 0)) // Внутренние отступы элемента
-                        }
+                    lastMouseX = e.GetPosition(thisPanel).X;
+                    lastMouseY = e.GetPosition(thisPanel).Y;
+                }
             };
-           
-            // Применяем стиль к ListBox
-            newBox.Styles.Add(itemStyle);
-            DragDrop.SetAllowDrop(newBox, true);
 
-            // Заполнение ListBox из базы данных
-            FillListBoxWithColumns(newBox, tableName);
+            resizeHandle.PointerReleased += (sender, e) =>
+            {
+                isResizing = false;
+            };
 
-
-            contentPanel.Child = newBox;
-
-            var mainStack = new StackPanel();
-            mainStack.Children.Add(titlePanel);
-            mainStack.Children.Add(contentPanel);
-            thisPanel.Child = mainStack; // Добавляем StackPanel в основную панель
-                                         // Подключение событий мыши для всей панели
-            //thisPanel.PointerPressed += ThisMouseDown;
+            // Устанавливаем Grid как содержимое основной панели
+            thisPanel.Child = grid;
             thisPanel.PointerMoved += ThisMouseMove;
-            //thisPanel.PointerReleased += ThisMouseUp;
 
-            // Добавляем панель в родителя
+            // Добавляем панель в родительский элемент
             if (parentObject is ILogical parent)
             {
                 (parent as Panel)?.Children.Add(thisPanel);
@@ -1543,6 +1451,40 @@ namespace LEAD_OLAP_DESINGER.Views
                 ThisListBox = newBox
             };
         }
+
+        private bool _isResizing = false;
+        private double _lastMouseY;
+
+        private void GridSplitter_DragDelta(object? sender, VectorEventArgs e)
+        {
+            if (sender is GridSplitter splitter)
+            {
+                var parentGrid = splitter.Parent as Grid;
+                if (parentGrid == null) return;
+
+                int columnIndex = Grid.GetColumn(splitter);
+
+                if (columnIndex == 1) // Первый сплиттер
+                {
+                    if (MainWindowViewModel.Column1Width.GridUnitType == GridUnitType.Star)
+                    {
+                        MainWindowViewModel.Column1Width = new GridLength(MainWindowViewModel.Column1Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
+                    }
+
+                    MainWindowViewModel.Column1Width = new GridLength(Math.Max(0, MainWindowViewModel.Column1Width.Value + e.Vector.X), GridUnitType.Pixel);
+                }
+                else if (columnIndex == 3) // Второй сплиттер
+                {
+                    if (MainWindowViewModel.Column2Width.GridUnitType == GridUnitType.Star)
+                    {
+                        MainWindowViewModel.Column2Width = new GridLength(MainWindowViewModel.Column2Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
+                    }
+
+                    MainWindowViewModel.Column2Width = new GridLength(Math.Max(0, MainWindowViewModel.Column2Width.Value + e.Vector.X), GridUnitType.Pixel);
+                }
+            }
+        }
+
 
         /// <summary>
         /// Событие двойного нажатия мышки
@@ -1644,11 +1586,16 @@ namespace LEAD_OLAP_DESINGER.Views
                     dragBoxFromMouseDownRect = new Rect(0, 0, 0, 0);
                 }
 
-                // Получаем данные панели
+                // Обновляем информацию о текущей панели, если перетаскивание происходит внутри панели
                 if (SourceListBox.Parent is Border contentPanel &&
-                        contentPanel.Parent is StackPanel mainStack &&
-                        mainStack.Parent is Border thisPanel &&
-                        thisPanel.Tag is PanelTag thisTag)
+                    contentPanel.Parent is Grid grid &&
+                    grid.Parent is Border thisPanel &&
+                    thisPanel.Tag is PanelTag thisTag)
+                // Получаем данные панели
+                //if (SourceListBox.Parent is Border contentPanel &&
+                //        contentPanel.Parent is StackPanel mainStack &&
+                //        mainStack.Parent is Border thisPanel &&
+                //        thisPanel.Tag is PanelTag thisTag)
                 {
                     SourceTable_id = thisTag.Table_id;
                     SourceTableAlias = thisTag.TableAlias;
@@ -1923,9 +1870,14 @@ namespace LEAD_OLAP_DESINGER.Views
 
                         // Извлекаем данные из родительских элементов
                         if (targetListBox.Parent is Border contentPanel &&
-                            contentPanel.Parent is StackPanel mainStack &&
-                            mainStack.Parent is Border thisPanel &&
-                            thisPanel.Tag is PanelTag thisTag)
+                         contentPanel.Parent is Grid grid &&
+                         grid.Parent is Border thisPanel &&
+                         thisPanel.Tag is PanelTag thisTag)
+                       
+                        //if (targetListBox.Parent is Border contentPanel &&
+                        //    contentPanel.Parent is StackPanel mainStack &&
+                        //    mainStack.Parent is Border thisPanel &&
+                        //    thisPanel.Tag is PanelTag thisTag)
                         {
                             TargetTable_id = thisTag.Table_id;
                             TargetTableAlias = thisTag.TableAlias;
@@ -3270,33 +3222,53 @@ namespace LEAD_OLAP_DESINGER.Views
             await command.ExecuteNonQueryAsync();
         }
 
+        /// <summary>
+        /// Селект строки объекта
+        /// </summary>
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
             if (gridObj.SelectedItem is ReporterObject selectedItem)
             {
-               // MessageDialog.Show("",selectedItem.ObjectName.ToString());
                 // Обработать выбранный элемент
                 selectedObject =  selectedItem;
             }
 
-            if (treeObj.SelectedItem is HeaderNode)
-            {
-                treeObj.SelectedItem = null; // Сбрасываем выделение
-            }
-            if (treeObj.SelectedItem is ReporterNode)
+            if (treeObj.SelectedItem is HeaderNode || treeObj.SelectedItem is ReporterNode)
             {
                 treeObj.SelectedItem = null; // Сбрасываем выделение
             }
 
+            // Проверяем, если клик произошел по HeaderNode, отменяем его
             if (treeObj.SelectedItem is ReporterObject selectedItemtr)
             {
-                //MessageDialog.Show("",selectedItemtr.ObjectName.ToString());
                 // Обработать выбранный элемент
                 selectedObject = selectedItemtr;
             }
 
         }
+
+        /// <summary>
+        /// Событие наведение мыши
+        /// </summary>
+        private void TreeObj_PointerMoved(object? sender, PointerEventArgs e)
+        {
+            if (sender is not TreeView treeView) return;
+
+            var hit = e.Source as Visual;
+
+            while (hit != null)
+            {
+                if (hit is Border border && border.DataContext is HeaderNode)
+                {
+                    border.Background = Brushes.Transparent;
+                    border.BorderBrush = Brushes.Transparent;
+                    return;
+                }
+                hit = hit.GetVisualParent(); // Используем Avalonia API для получения родителя
+            }
+        }
+
 
         /// <summary>
         /// Событие изменение объекта

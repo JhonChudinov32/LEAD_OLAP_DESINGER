@@ -17,40 +17,53 @@ using static LEAD_OLAP_DESINGER.Models.DBParameters;
 
 namespace LEAD_OLAP_DESINGER.ViewModels
 {
-public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
+    public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        private GridLength _column1Width = new GridLength(50, GridUnitType.Star);
-        public GridLength Column1Width
+      
+        private static GridLength _column1Width = new GridLength(1, GridUnitType.Star);
+        private static GridLength _column2Width = new GridLength(1, GridUnitType.Star);
+        private static GridLength _column3Width = new GridLength(1, GridUnitType.Star);
+
+        public static GridLength Column1Width
         {
             get => _column1Width;
             set
             {
-                _column1Width = value;
-                OnPropertyChanged(nameof(Column1Width));
+                if (_column1Width != value)
+                {
+                    _column1Width = value;
+                    StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Column1Width)));
+                }
             }
         }
 
-        private GridLength _column2Width = new GridLength(50, GridUnitType.Star);
-        public GridLength Column2Width
+        public static GridLength Column2Width
         {
             get => _column2Width;
             set
             {
-                _column2Width = value;
-                OnPropertyChanged(nameof(Column2Width));
+                if (_column2Width != value)
+                {
+                    _column2Width = value;
+                    StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Column2Width)));
+                }
             }
         }
 
-        private GridLength _column3Width = new GridLength(50, GridUnitType.Star);
-        public GridLength Column3Width
+        public static GridLength Column3Width
         {
             get => _column3Width;
             set
             {
-                _column3Width = value;
-                OnPropertyChanged(nameof(Column3Width));
+                if (_column3Width != value)
+                {
+                    _column3Width = value;
+                    StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Column3Width)));
+
+                }
             }
         }
+
         public void UpdateColumnWidths(double totalWidth)
         {
             Column1Width = new GridLength(totalWidth * 0.3, GridUnitType.Pixel);

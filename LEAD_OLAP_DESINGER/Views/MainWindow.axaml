@@ -25,9 +25,12 @@
     <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
     <l:ColumnWidthConverter2 x:Key="ColumnWidthConverter2"/>
 
-    <ColumnDefinition x:Key="Column1" Width="{Binding Column1Width}"/>
-    <ColumnDefinition x:Key="Column2" Width="{Binding Column2Width}"/>
-    <ColumnDefinition x:Key="Column3" Width="{Binding Column3Width}"/>
+    <ColumnDefinition x:Key="Column1" Width="*"/>
+    <ColumnDefinition x:Key="Column2" Width="1"/>
+    <ColumnDefinition x:Key="Column3" Width="*"/>
+    <ColumnDefinition x:Key="Column4" Width="1"/>
+    <ColumnDefinition x:Key="Column5" Width="*"/>
+
   </Window.Resources>
 
 
@@ -236,32 +239,11 @@
                   </DataGrid>
                     <Grid>
                       <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                       
                         <RowDefinition Height="*" /> 
-                       
                       </Grid.RowDefinitions>
 
-                      <!--<Grid  Name="HeaderGrid" Grid.Row="0" Margin="5,5,5,0" SizeChanged="HeaderGrid_SizeChanged">
-                        <Grid.ColumnDefinitions>
-                          <StaticResource ResourceKey="Column1"/>
-                          <StaticResource ResourceKey="Column2"/>
-                          <StaticResource ResourceKey="Column3"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0"  Background="{DynamicResource PrimaryColor}" BorderThickness="1" Padding="5" HorizontalAlignment="Stretch">
-                          <TextBlock Text="OLAP объект" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
-                        </Border>
-                        <Border Grid.Column="1"  Background="{DynamicResource PrimaryColor}" BorderThickness="1" Padding="5" HorizontalAlignment="Stretch">
-                          <TextBlock Text="Наименование" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
-                        </Border>
-                        <Border Grid.Column="2"  Background="{DynamicResource PrimaryColor}" BorderThickness="1" Padding="5" HorizontalAlignment="Stretch">
-                          <TextBlock Text="Тип" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="20,0,0,0"/>
-                        </Border>
-                      </Grid>-->
-                      
-                      <TreeView Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged"
-                       Grid.Row="1" Margin="5,0,5,5" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}">
+                      <TreeView Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged" PointerMoved="TreeObj_PointerMoved"
+                       Margin="5,0,5,5" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
                         <TreeView.DataTemplates>
                           <!-- Корневой узел с заголовками (отображается один раз в TreeView) -->
                           <TreeDataTemplate DataType="{x:Type local:HeaderNode}" ItemsSource="{Binding Children}">
@@ -270,16 +252,20 @@
                                 <StaticResource ResourceKey="Column1"/>
                                 <StaticResource ResourceKey="Column2"/>
                                 <StaticResource ResourceKey="Column3"/>
+                                <StaticResource ResourceKey="Column4"/>
+                                <StaticResource ResourceKey="Column5"/>
                               </Grid.ColumnDefinitions>
 
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
-                                <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,0,0"/>
+                                <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <Border Grid.Column="1" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
-                                <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,0,0"/>
-                              </Border>
+                              <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"/>
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
-                                <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,0,0"/>
+                                <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
+                              </Border>
+                              <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"/>
+                              <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
+                                <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
                             </Grid>
                           </TreeDataTemplate>
@@ -287,25 +273,28 @@
                           <TreeDataTemplate DataType="{x:Type local:ReporterNode}" ItemsSource="{Binding Objects}">
                             <StackPanel>
                               <TextBlock Text="{Binding ClassName}" FontWeight="Bold" FontSize="12" Padding="0"/>
-
                             </StackPanel>
                           </TreeDataTemplate>
-
+                          
                           <DataTemplate DataType="{x:Type local:ReporterObject}">
-                            <Grid Margin="0,0,0,0">
+                            <Grid Margin="-15,0,0,0">
                               <Grid.ColumnDefinitions>
                                 <StaticResource ResourceKey="Column1"/>
                                 <StaticResource ResourceKey="Column2"/>
                                 <StaticResource ResourceKey="Column3"/>
+                                <StaticResource ResourceKey="Column4"/>
+                                <StaticResource ResourceKey="Column5"/>
                               </Grid.ColumnDefinitions>
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock  Text="{Binding ObjectName}" Grid.Column="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock  Text="{Binding ObjectName}" Grid.Column="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
-                              <Border Grid.Column="1" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding ObjectDescription}" Grid.Column="1" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-                              </Border>
+                             
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding ObjectType}" Grid.Column="2" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                                <TextBlock Text="{Binding ObjectDescription}" Grid.Column="1" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                              </Border>
+                             
+                              <Border Grid.Column="4" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
+                                <TextBlock Text="{Binding ObjectType}" Grid.Column="2" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
                             </Grid>
                           </DataTemplate>
@@ -314,6 +303,7 @@
                       </TreeView>
                     </Grid>
 
+                    
                   </StackPanel>
                 </Grid>
               </Border>
