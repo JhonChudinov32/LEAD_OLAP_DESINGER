@@ -11,11 +11,11 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("LEAD_OLAP_DESINGER")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("LogistiX")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ffae0a6256061177fc59ac39c605c96428272ff")]
-[assembly: System.Reflection.AssemblyProductAttribute("LEAD_OLAP_DESINGER")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+eb7cbcc8ebba007ca889430d5df964a641b17cf0")]
+[assembly: System.Reflection.AssemblyProductAttribute("Olap дизайнер")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LEAD_OLAP_DESINGER")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 

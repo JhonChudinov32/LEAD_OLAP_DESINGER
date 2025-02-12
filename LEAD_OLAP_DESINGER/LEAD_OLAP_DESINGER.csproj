@@ -7,6 +7,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\logistix.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Version>1.0</Version>
+    <Company>LogistiX</Company>
+    <Product>Olap дизайнер</Product>
+    <Authors>LogistiX</Authors>
   </PropertyGroup>
 
   <ItemGroup>

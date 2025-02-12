@@ -17,12 +17,11 @@ namespace LEAD_OLAP_DESINGER;
 public partial class JoinPropertiesDialog : Window
 {
     public ArrayList ThisList;
-    public Boolean IsReturnValue;
     public String Join_id, WhereStatement;
     public JoinPropertiesDialog(string joinId, string valSourceTableName, string valSourceColumnName, string valTargetTableName, string valTargetColumnName, string valJoinCondition)
     {
         InitializeComponent();
-        this.IsReturnValue = false;
+        MainWindowViewModel.IsReturnValue = false;
         ThisList = new ArrayList();
 
         if (MainWindowViewModel.dbms == DBMS.MS)
@@ -160,7 +159,7 @@ public partial class JoinPropertiesDialog : Window
     // Обработчик кнопки "Принять"
     private void AcceptButton_Click(object sender, RoutedEventArgs e)
     {
-        this.IsReturnValue = true;
+        MainWindowViewModel.IsReturnValue = true;
         this.WhereStatement = JoinCondition.Text;
 
         int SelectedIndex = JoinsList.SelectedIndex;

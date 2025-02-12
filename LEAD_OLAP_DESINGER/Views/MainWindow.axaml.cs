@@ -29,10 +29,7 @@ using LEAD_OLAP_DESINGER.Helpers;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Presenters;
 using Avalonia.VisualTree;
-using Tmds.DBus.Protocol;
 
 
 namespace LEAD_OLAP_DESINGER.Views
@@ -281,11 +278,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 DataContext = MainWindowViewModel.title;
             }
         }
-        private void RaisePropertyChanged(string propertyName)
-        {
-            //var bindingExpression = Title.GetBindingExpression(Label.ContentProperty);
-            //bindingExpression?.UpdateTarget();
-        }
+       
         private async Task InitializeAsync()
         {
             if (_isInitializing)
@@ -415,7 +408,6 @@ namespace LEAD_OLAP_DESINGER.Views
             // Возвращаем обработчик после привязки данных
             comboBox.SelectionChanged += LayerComboBox_SelectionChanged;
         }
-
         private async void LayerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Получаем ComboBox, вызвавший событие
@@ -427,17 +419,14 @@ namespace LEAD_OLAP_DESINGER.Views
                 await InitializeAsync();
             }
         }
-
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-           
             if (gridMain.ColumnDefinitions.Count > 0)
             {
                 var width = gridMain.ColumnDefinitions[0].ActualWidth;
                 TabControlName.Width = width;
             }
         }
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -467,7 +456,6 @@ namespace LEAD_OLAP_DESINGER.Views
             EditObjectTip = new ToolTip { Content = "Изменить параметры объекта" };
             BackObjectTip = new ToolTip { Content = "Создать объект" };
         }
-
         private void SetToolTip(string controlName, ToolTip toolTip)
         {
             if (this.FindControl<Control>(controlName) is Control control)
@@ -475,7 +463,6 @@ namespace LEAD_OLAP_DESINGER.Views
                 ToolTip.SetTip(control, toolTip.Content);
             }
         }
-
         private Border GetParentPanel(Control child)
         {
             // Перебираем родителей элемента до тех пор, пока не найдем MainPanel
@@ -992,8 +979,6 @@ namespace LEAD_OLAP_DESINGER.Views
                 MessageDialog.Show("General Error", $"Ошибка: {ex.Message}");
             }
         }
-
-
         private void HeaderGrid_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
             if (DataContext is MainWindowViewModel vm)
@@ -1257,7 +1242,8 @@ namespace LEAD_OLAP_DESINGER.Views
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(1),
                 Width = 150,
-                Height = 204
+                Height = 204,
+                Cursor = new Cursor(StandardCursorType.SizeAll)
             };
 
             if (x == -1) x = 100;
@@ -1332,7 +1318,8 @@ namespace LEAD_OLAP_DESINGER.Views
                 Background = new SolidColorBrush(backgroundColor),
                 Padding = new Thickness(0),
                 VerticalAlignment = VerticalAlignment.Stretch,  // Обеспечиваем растяжение по вертикали
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Cursor = new Cursor(StandardCursorType.DragMove)
             };
 
             newBox.ItemTemplate = new FuncDataTemplate<object>((item, provider) =>
@@ -1387,7 +1374,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 Height = 5,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Right,
-                Cursor = new Cursor(StandardCursorType.SizeAll)
+                Cursor = new Cursor(StandardCursorType.SizeWestEast)
             };
 
             grid.Children.Add(resizeHandle);
@@ -1413,7 +1400,7 @@ namespace LEAD_OLAP_DESINGER.Views
 
                     // Изменяем размеры панели
                     var newWidth = Math.Max(150, thisPanel.Width + deltaX);  // Ширина
-                    var newHeight = Math.Max(50, thisPanel.Height + deltaY); // Высота
+                    var newHeight = Math.Max(204, thisPanel.Height + deltaY); // Высота
 
                     thisPanel.Width = newWidth;
                     thisPanel.Height = newHeight;
@@ -1452,6 +1439,7 @@ namespace LEAD_OLAP_DESINGER.Views
             };
         }
 
+      
         private bool _isResizing = false;
         private double _lastMouseY;
 
@@ -1518,9 +1506,10 @@ namespace LEAD_OLAP_DESINGER.Views
             if (elementName == "PANEL_TITLE")
             {
                 IsMoveMode = true;
+
                 var headerPanel = sender as Border;
                 var thisPanel = GetParentPanel(headerPanel);
-
+               
 
                 if (thisPanel != null)
                 {
@@ -1616,6 +1605,7 @@ namespace LEAD_OLAP_DESINGER.Views
 
                 if (CurrentPanel != null)
                 {
+                    //CurrentPanel.ZIndex = 10;
                     var tags = CurrentPanel.Tag as PanelTag;
                     var x = Canvas.GetLeft(CurrentPanel);  // Для Avalonia, используем Canvas.GetLeft для получения координат
                     var y = Canvas.GetTop(CurrentPanel);   // Для Avalonia, используем Canvas.GetTop для получения координат
@@ -1969,7 +1959,7 @@ namespace LEAD_OLAP_DESINGER.Views
                    
                     var dialogResult = await joinDialog.ShowDialog<bool>(this);
 
-                    if (dialogResult && joinDialog.IsReturnValue)
+                    if (dialogResult != null && MainWindowViewModel.IsReturnValue)
                     {
                         // Обновление данных
                         selectedJoin.ConditionStatement = joinDialog.WhereStatement;
@@ -2046,7 +2036,7 @@ namespace LEAD_OLAP_DESINGER.Views
                $"{SourceTableAlias}.{fromField} = {TargetTableAlias}.{toField}");
 
                 var dialogResult = await myForm.ShowDialog<bool>(this);
-                if (dialogResult != null && myForm.IsReturnValue)
+                if (dialogResult != null && MainWindowViewModel.IsReturnValue)
                 {
                     var thisCoors = GetLineCoors(SourceListBox, TargetListBox, IndexOfDragField, IndexOfDropField);
                     var myLine = new LineControl(OLAPPanel, thisCoors.FromX, thisCoors.FromY, thisCoors.ToX, thisCoors.ToY,
@@ -2219,7 +2209,7 @@ namespace LEAD_OLAP_DESINGER.Views
 
             if (MainWindowViewModel.dbms == DBMS.MS)
             {
-                const string query = @"INSERT INTO ReporterTableJoins (System_id, SourceTable_id, TargetTable_id, ReporterJoin_id, ConditionStatement, SourceColumn, TargetColumn, [GUID], ReporterLayer_id) VALUES (@SystemId, @SourceTableId, @TargetTableId, @JoinId, @WhereStatement, @FromField, @ToField, @Guid, @ReporterLayerId)";
+                const string query = @"INSERT INTO ReporterTableJoins (System_id, SourceTable_id, TargetTable_id, ReporterJoin_id, ConditionStatement, SourceColumn, TargetColumn, GUID, ReporterLayer_id) VALUES (@SystemId, @SourceTableId, @TargetTableId, @JoinId, @WhereStatement, @FromField, @ToField, @Guid, @ReporterLayerId)";
                 using (var dbConnection = new Connect())
                 {
                     SqlConnection connection = dbConnection.Cnn;
@@ -2249,7 +2239,7 @@ namespace LEAD_OLAP_DESINGER.Views
             }
             else if (MainWindowViewModel.dbms == DBMS.PG)
             {
-                const string query = @"INSERT INTO ReporterTableJoins (System_id, SourceTable_id, TargetTable_id, ReporterJoin_id, ConditionStatement, SourceColumn, TargetColumn, [GUID], ReporterLayer_id) VALUES (@SystemId, @SourceTableId, @TargetTableId, @JoinId, @WhereStatement, @FromField, @ToField, @Guid, @ReporterLayerId)";
+                const string query = @"INSERT INTO ReporterTableJoins (System_id, SourceTable_id, TargetTable_id, ReporterJoin_id, ConditionStatement, SourceColumn, TargetColumn, GUID, ReporterLayer_id) VALUES (@SystemId, @SourceTableId, @TargetTableId, @JoinId, @WhereStatement, @FromField, @ToField, @Guid, @ReporterLayerId)";
                 using (var dbConnection = new ConnectPG()) // Используем класс подключения для PostgreSQL
                 {
                     var connection = dbConnection.Cnn;
@@ -2400,6 +2390,7 @@ namespace LEAD_OLAP_DESINGER.Views
             var myText = myForm.FindControl<TextBox>("AliasTextBox");
 
             bool hasItems = false;
+            string ThisGUID = await GetGUIDAsync();
 
             myBox.Items.Clear();
 
@@ -2452,6 +2443,7 @@ namespace LEAD_OLAP_DESINGER.Views
 
                     if (MainWindowViewModel.IsAccepted && !string.IsNullOrEmpty(tableAlias))
                     {
+
                         var thisReturn = CreateCustomPanel(tableAlias, OLAPPanel, tableName, -1, -1, -1);
                         var customPanel = thisReturn.ThisPanel;
                         var customList = thisReturn.ThisListBox;
@@ -2459,7 +2451,7 @@ namespace LEAD_OLAP_DESINGER.Views
 
                         string x = customPanel.Margin.Left.ToString();
                         string y = customPanel.Margin.Top.ToString();
-                        int tableId = await InsertTableAsync(connection, tableAlias, tableName, x, y);
+                        int tableId = await InsertTableAsync(connection, tableAlias, tableName, x, y, ThisGUID);
 
                         // Link table ID with the custom panel
                         var thisTag = new PanelTag
@@ -2548,7 +2540,7 @@ namespace LEAD_OLAP_DESINGER.Views
                         string y = customPanel.Margin.Top.ToString();
 
                         // Вставляем новую таблицу в базу данных и получаем ее ID
-                        int tableId = await InsertTablePGAsync(connection, tableAlias, tableName, x, y);
+                        int tableId = await InsertTablePGAsync(connection, tableAlias, tableName, x, y, ThisGUID);
 
                         // Связываем ID таблицы с пользовательской панелью
                         var thisTag = new PanelTag
@@ -2594,11 +2586,11 @@ namespace LEAD_OLAP_DESINGER.Views
                 return (int)await command.ExecuteScalarAsync();
             }
         }
-        private async Task<int> InsertTablePGAsync(NpgsqlConnection connection, string tableAlias, string tableName, string x, string y)
+        private async Task<int> InsertTablePGAsync(NpgsqlConnection connection, string tableAlias, string tableName, string x, string y, string GUID)
         {
             const string insertTableCommand = @"INSERT INTO ReporterTables 
-                                        (System_id, TableName, TableAlias, X, Y, ReporterLayer_id) 
-                                        VALUES (@SystemId, @TableName, @TableAlias, @X, @Y, @ReporterLayerId)";
+                                        (System_id, TableName, TableAlias, X, Y, ReporterLayer_id, GUID) 
+                                        VALUES (@SystemId, @TableName, @TableAlias, @X, @Y, @ReporterLayerId, @GUID)";
             using (var command = new NpgsqlCommand(insertTableCommand, connection))
             {
                 command.Parameters.AddWithValue("@SystemId", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
@@ -2607,6 +2599,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 command.Parameters.AddWithValue("@X", NpgsqlTypes.NpgsqlDbType.Double, Convert.ToDouble(x));
                 command.Parameters.AddWithValue("@Y", NpgsqlTypes.NpgsqlDbType.Double, Convert.ToDouble(y));
                 command.Parameters.AddWithValue("@ReporterLayerId", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
+                command.Parameters.AddWithValue("@GUID", NpgsqlTypes.NpgsqlDbType.Uuid, Guid.Parse(GUID));
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -2630,10 +2623,10 @@ namespace LEAD_OLAP_DESINGER.Views
 
             return -1; // Если запись не найдена
         }
-        private async Task<int> InsertTableAsync(SqlConnection connection, string tableAlias, string tableName, string x, string y)
+        private async Task<int> InsertTableAsync(SqlConnection connection, string tableAlias, string tableName, string x, string y, string GUID)
         {
-            var insertTableCommand = "INSERT INTO ReporterTables (System_id, TableName, TableAlias, X, Y, ReporterLayer_id) " +
-                                     "VALUES (@SystemId, @TableName, @TableAlias, @X, @Y, @ReporterLayerId)";
+            var insertTableCommand = "INSERT INTO ReporterTables (System_id, TableName, TableAlias, X, Y, ReporterLayer_id, GUID) " +
+                                     "VALUES (@SystemId, @TableName, @TableAlias, @X, @Y, @ReporterLayerId, @GUID)";
             using (var command = new SqlCommand(insertTableCommand, connection))
             {
                 command.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
@@ -2642,6 +2635,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 command.Parameters.AddWithValue("@X", x);
                 command.Parameters.AddWithValue("@Y", y);
                 command.Parameters.AddWithValue("@ReporterLayerId", MainWindowViewModel.ReporterLayer_id);
+                command.Parameters.AddWithValue("@GUID", GUID);
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -3038,49 +3032,110 @@ namespace LEAD_OLAP_DESINGER.Views
 
                                         if (myForm.ObjectType == 0)
                                         {
-                                            ThisCommand.CommandText = $@"INSERT INTO ReporterDimensions (System_id, ReporterClass_id, ReporterTable_id, DimensionName, AssociatedColumn, SelectStatement, WhereStatement, [GUID])
-                                        VALUES ({MainWindowViewModel.System_id}, {myForm.ReporterClass_id}, {ReporterTable_id}, '{myForm.ReturnObjectName.Replace("'", "''")}', '{myForm.ReturnSelectStatement.Replace("'", "''")}', '{myForm.ReturnWhereStatement.Replace("'", "''")}', '{ThisGUID}')";
+                                            ThisCommand.CommandText = @"INSERT INTO ReporterDimensions (System_id, ReporterClass_id, ReporterTable_id, DimensionName, AssociatedColumn, SelectStatement, WhereStatement, GUID)
+VALUES (@System_id, @ReporterClass_id, @ReporterTable_id, @DimensionName, @AssociatedColumn, @SelectStatement, @WhereStatement, @GUID)";
+
+                                            ThisCommand.Parameters.Clear();
+                                            ThisCommand.Parameters.AddWithValue("@System_id", MainWindowViewModel.System_id);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterClass_id", myForm.ReporterClass_id);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterTable_id", ReporterTable_id);
+                                            ThisCommand.Parameters.AddWithValue("@DimensionName", myForm.ReturnObjectName);
+                                            ThisCommand.Parameters.AddWithValue("@AssociatedColumn", myForm.ReturnSelectStatement);
+                                            ThisCommand.Parameters.AddWithValue("@SelectStatement", myForm.ReturnWhereStatement);
+                                            ThisCommand.Parameters.AddWithValue("@WhereStatement", myForm.ReturnWhereStatement);
+                                            ThisCommand.Parameters.AddWithValue("@GUID", ThisGUID);
+
                                             await ThisCommand.ExecuteNonQueryAsync();
 
-                                            ThisCommand.CommandText = $"SELECT TOP 1 tid FROM ReporterDimensions WHERE [GUID] = '{ThisGUID}'";
+                                            // Получаем tid по GUID
+                                            ThisCommand.CommandText = "SELECT TOP 1 tid FROM ReporterDimensions WHERE GUID = @GUID";
+                                            ThisCommand.Parameters.Clear();
+                                            ThisCommand.Parameters.AddWithValue("@GUID", ThisGUID);
+
                                             using var reader = await ThisCommand.ExecuteReaderAsync();
                                             if (reader.Read())
                                             {
                                                 Dimension_id = reader.GetValue(0).ToString();
                                             }
                                             reader.Close();
-                                            Measure_id = "NULL";
-                                            Detail_id = "NULL";
+
+                                            // Обрабатываем NULL
+                                            Measure_id = null;
+                                            Detail_id = null;
                                         }
                                         else if (myForm.ObjectType == 1)
                                         {
+                                            // Определяем значение IsFloat (0 или 1)
+                                            string ValueReturn = myForm.ReturnIsFloat ? "1" : "0";
 
-                                            if (myForm.ReturnIsFloat) TempValue = "1"; else TempValue = "0";
-                                            ThisCommand.CommandText = "INSERT INTO ReporterMeasures (System_id, ReporterClass_id, ReporterTable_id, MeasureName, AssociatedColumn, SelectStatement, WhereStatement, ReporterAggregate_id, IsFloat, [GUID]) VALUES (" + MainWindowViewModel.System_id + ", " + myForm.ReporterClass_id + ", " + ReporterTable_id + ", '" + myForm.ReturnObjectName.Replace("'", "''") + "', '" + ThisList.Items[ThisList.SelectedIndex].ToString() + "', '" + myForm.ReturnSelectStatement.Replace("'", "''") + "', '" + myForm.ReturnWhereStatement.Replace("'", "''") + "', " + myForm.ReporterAggregate_id + ", '" + TempValue + "', '" + ThisGUID + "')";
+                                            // SQL-запрос на вставку данных
+                                            ThisCommand.CommandText = @"INSERT INTO ReporterMeasures (System_id, ReporterClass_id, ReporterTable_id, MeasureName, AssociatedColumn, SelectStatement, WhereStatement, ReporterAggregate_id, IsFloat, [GUID])
+VALUES (@System_id, @ReporterClass_id, @ReporterTable_id, @MeasureName, @AssociatedColumn, @SelectStatement, @WhereStatement, @ReporterAggregate_id, @IsFloat, @GUID)";
+
+                                            ThisCommand.Parameters.Clear();
+                                            ThisCommand.Parameters.AddWithValue("@System_id", MainWindowViewModel.System_id);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterClass_id", myForm.ReporterClass_id);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterTable_id", ReporterTable_id);
+                                            ThisCommand.Parameters.AddWithValue("@MeasureName", myForm.ReturnObjectName);
+                                            ThisCommand.Parameters.AddWithValue("@AssociatedColumn", ThisList.Items[ThisList.SelectedIndex].ToString());
+                                            ThisCommand.Parameters.AddWithValue("@SelectStatement", myForm.ReturnSelectStatement);
+                                            ThisCommand.Parameters.AddWithValue("@WhereStatement", myForm.ReturnWhereStatement);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterAggregate_id", myForm.ReporterAggregate_id);
+                                            ThisCommand.Parameters.AddWithValue("@IsFloat", ValueReturn);
+                                            ThisCommand.Parameters.AddWithValue("@GUID", ThisGUID);
+
                                             await ThisCommand.ExecuteNonQueryAsync();
-                                            ThisCommand.CommandText = "SELECT TOP 1 tid FROM ReporterMeasures with (nolock) WHERE [GUID] = '" + ThisGUID + "'";
+
+                                            // Получаем tid по GUID
+                                            ThisCommand.CommandText = "SELECT TOP 1 tid FROM ReporterMeasures WITH (NOLOCK) WHERE [GUID] = @GUID";
+                                            ThisCommand.Parameters.Clear();
+                                            ThisCommand.Parameters.AddWithValue("@GUID", ThisGUID);
+
                                             using var reader = await ThisCommand.ExecuteReaderAsync();
                                             if (reader.Read())
                                             {
                                                 Measure_id = reader.GetValue(0).ToString();
                                             }
                                             reader.Close();
-                                            Dimension_id = "NULL";
-                                            Detail_id = "NULL";
+
+                                            // Обрабатываем NULL
+                                            Dimension_id = null;
+                                            Detail_id = null;
                                         }
                                         else if (myForm.ObjectType == 2)
                                         {
-                                            ThisCommand.CommandText = "INSERT INTO ReporterDetails (System_id, ReporterClass_id, ReporterDimension_id, DetailName, AssociatedColumn, SelectStatement, WhereStatement, [GUID]) VALUES (" + myForm.ReporterClass_id + ", " + MainWindowViewModel.System_id + ", " + myForm.ReporterDimension_id + ", '" + myForm.ReturnObjectName.Replace("'", "''") + "', '" + ThisList.Items[ThisList.SelectedIndex].ToString() + "', '" + myForm.ReturnSelectStatement.Replace("'", "''") + "', '" + myForm.ReturnWhereStatement.Replace("'", "''") + "', '" + ThisGUID + "')";
+                                            // SQL-запрос на вставку данных
+                                            ThisCommand.CommandText = @"INSERT INTO ReporterDetails (System_id, ReporterClass_id, ReporterDimension_id, DetailName, AssociatedColumn, SelectStatement, WhereStatement, [GUID])
+VALUES (@System_id, @ReporterClass_id, @ReporterDimension_id, @DetailName, @AssociatedColumn, @SelectStatement, @WhereStatement, @GUID)";
+
+                                            ThisCommand.Parameters.Clear();
+                                            ThisCommand.Parameters.AddWithValue("@System_id", MainWindowViewModel.System_id);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterClass_id", myForm.ReporterClass_id);
+                                            ThisCommand.Parameters.AddWithValue("@ReporterDimension_id", myForm.ReporterDimension_id);
+                                            ThisCommand.Parameters.AddWithValue("@DetailName", myForm.ReturnObjectName);
+                                            ThisCommand.Parameters.AddWithValue("@AssociatedColumn", ThisList.Items[ThisList.SelectedIndex].ToString());
+                                            ThisCommand.Parameters.AddWithValue("@SelectStatement", myForm.ReturnSelectStatement);
+                                            ThisCommand.Parameters.AddWithValue("@WhereStatement", myForm.ReturnWhereStatement);
+                                            ThisCommand.Parameters.AddWithValue("@GUID", ThisGUID);
+
                                             await ThisCommand.ExecuteNonQueryAsync();
-                                            ThisCommand.CommandText = "SELECT TOP 1 tid FROM ReporterDetails with (nolock) WHERE [GUID] = '" + ThisGUID + "'";
+
+                                            // Получаем tid по GUID
+                                            ThisCommand.CommandText = "SELECT TOP 1 tid FROM ReporterDetails WITH (NOLOCK) WHERE [GUID] = @GUID";
+                                            ThisCommand.Parameters.Clear();
+                                            ThisCommand.Parameters.AddWithValue("@GUID", ThisGUID);
+
                                             using var reader = await ThisCommand.ExecuteReaderAsync();
                                             if (reader.Read())
                                             {
                                                 Detail_id = reader.GetValue(0).ToString();
                                             }
                                             reader.Close();
-                                            Dimension_id = "NULL";
-                                            Measure_id = "NULL";
+
+                                            // Обрабатываем NULL
+                                            Dimension_id = null;
+                                            Measure_id = null;
+
                                         }
 
                                         await FinalizeObjectCreation(ThisCommand, myForm, Dimension_id, Measure_id, Detail_id, ThisGUID);
@@ -3195,21 +3250,50 @@ namespace LEAD_OLAP_DESINGER.Views
       
         private async Task FinalizeObjectCreation(SqlCommand command, ObjectDialog form, string dimensionId, string measureId, string detailId, string guid)
         {
-            command.CommandText = $@"INSERT INTO ReporterObjects (System_id, ObjectName, ReporterDimension_id, ReporterMeasure_id, ReporterDetail_id, ReporterClass_id, IsNumeric, [GUID], ReporterLayer_id)
-        VALUES ({MainWindowViewModel.System_id}, '{form.ReturnObjectName.Replace("'", "''")}', {dimensionId}, {measureId}, {detailId}, {form.ReporterClass_id}, {(form.ReturnIsNumeric ? 1 : 0)}, '{guid}', {MainWindowViewModel.ReporterLayer_id})";
+            string objectDescription = GenerateObjectDescription(form.ReturnObjectName);
+
+            command.CommandText = @"INSERT INTO ReporterObjects (System_id, ObjectName, ObjectDescription, ReporterDimension_id, ReporterMeasure_id, ReporterDetail_id, ReporterClass_id, IsNumeric, [GUID], ReporterLayer_id)
+VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @ReporterMeasure_id, @ReporterDetail_id, @ReporterClass_id, @IsNumeric, @GUID, @ReporterLayer_id)";
+
+            command.Parameters.Clear();
+            command.Parameters.AddWithValue("@System_id", MainWindowViewModel.System_id);
+            command.Parameters.AddWithValue("@ObjectName", form.ReturnObjectName);
+            command.Parameters.AddWithValue("@ObjectDescription", objectDescription);
+            command.Parameters.AddWithValue("@ReporterDimension_id", (object?)dimensionId ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ReporterMeasure_id", (object?)measureId ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ReporterDetail_id", (object?)detailId ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ReporterClass_id", form.ReporterClass_id);
+            command.Parameters.AddWithValue("@IsNumeric", form.ReturnIsNumeric ? 1 : 0);
+            command.Parameters.AddWithValue("@GUID", guid);
+            command.Parameters.AddWithValue("@ReporterLayer_id", MainWindowViewModel.ReporterLayer_id);
+
             await command.ExecuteNonQueryAsync();
+
+        }
+        private string GenerateObjectDescription(string objectName)
+        {
+            if (string.IsNullOrWhiteSpace(objectName))
+                return "Нет описания"; // Если ObjectName пустой, ставим заглушку
+
+            // Разделяем слова, заменяя подчеркивания и переводя в удобочитаемый формат
+            string description = objectName.Replace("_", " ");
+
+            // Делаем первую букву каждого слова заглавной
+            description = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(description.ToLower());
+
+            return description;
         }
 
         private async Task FinalizeObjectCreationPG(NpgsqlCommand command, ObjectDialog form, string dimensionId, string measureId, string detailId, string guid)
         {
+            string objectDescription = GenerateObjectDescription(form.ReturnObjectName);
             // Параметризованный запрос для PostgreSQL
-            command.CommandText = @"
-        INSERT INTO ReporterObjects (System_id, ObjectName, ReporterDimension_id, ReporterMeasure_id, ReporterDetail_id, ReporterClass_id, IsNumeric, ""GUID"", ReporterLayer_id)
-        VALUES (@System_id, @ObjectName, @ReporterDimension_id, @ReporterMeasure_id, @ReporterDetail_id, @ReporterClass_id, @IsNumeric, @GUID, @ReporterLayer_id)";
+            command.CommandText = @"INSERT INTO ReporterObjects (System_id, ObjectName,ObjectDescription, ReporterDimension_id, ReporterMeasure_id, ReporterDetail_id, ReporterClass_id, IsNumeric, GUID, ReporterLayer_id) VALUES (@System_id, @ObjectName,@ObjectDescription, @ReporterDimension_id, @ReporterMeasure_id, @ReporterDetail_id, @ReporterClass_id, @IsNumeric, @GUID, @ReporterLayer_id)";
 
             // Добавление параметров
             command.Parameters.AddWithValue("@System_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
             command.Parameters.AddWithValue("@ObjectName", NpgsqlTypes.NpgsqlDbType.Text, Convert.ToString(form.ReturnObjectName.Replace("'", "''")));  // Замена кавычек для защиты от SQL инъекций
+            command.Parameters.AddWithValue("@ObjectDescription", NpgsqlTypes.NpgsqlDbType.Text, Convert.ToString(objectDescription));
             command.Parameters.AddWithValue("@ReporterDimension_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(dimensionId == "NULL" ? (object)DBNull.Value : dimensionId));
             command.Parameters.AddWithValue("@ReporterMeasure_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(measureId == "NULL" ? (object)DBNull.Value : measureId));
             command.Parameters.AddWithValue("@ReporterDetail_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(detailId == "NULL" ? (object)DBNull.Value : detailId));
@@ -3268,7 +3352,6 @@ namespace LEAD_OLAP_DESINGER.Views
                 hit = hit.GetVisualParent(); // Используем Avalonia API для получения родителя
             }
         }
-
 
         /// <summary>
         /// Событие изменение объекта

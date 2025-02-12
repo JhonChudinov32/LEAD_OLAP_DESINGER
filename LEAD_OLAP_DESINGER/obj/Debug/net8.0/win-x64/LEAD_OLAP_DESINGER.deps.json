@@ -7,7 +7,7 @@
   "targets": {
     ".NETCoreApp,Version=v8.0": {},
     ".NETCoreApp,Version=v8.0/win-x64": {
-      "LEAD_OLAP_DESINGER/1.0.0": {
+      "LEAD_OLAP_DESINGER/1.0": {
         "dependencies": {
           "Avalonia": "11.2.1",
           "Avalonia.Controls.TreeDataGrid": "11.1.0",
@@ -1098,7 +1098,7 @@
     }
   },
   "libraries": {
-    "LEAD_OLAP_DESINGER/1.0.0": {
+    "LEAD_OLAP_DESINGER/1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

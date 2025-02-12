@@ -23,11 +23,10 @@
     </Design.DataContext>
   <Window.Resources>
     <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
-    <l:ColumnWidthConverter2 x:Key="ColumnWidthConverter2"/>
 
-    <ColumnDefinition x:Key="Column1" Width="*"/>
+    <ColumnDefinition x:Key="Column1" Width="50"/>
     <ColumnDefinition x:Key="Column2" Width="1"/>
-    <ColumnDefinition x:Key="Column3" Width="*"/>
+    <ColumnDefinition x:Key="Column3" Width="50"/>
     <ColumnDefinition x:Key="Column4" Width="1"/>
     <ColumnDefinition x:Key="Column5" Width="*"/>
 
@@ -47,14 +46,14 @@
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <!-- Иконка для пункта меню -->
-            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/gear.png" Width="14" Height="14" Margin="0,0,5,0"/>
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/gear1.png" Width="14" Height="14" Margin="0,0,5,0"/>
             <TextBlock Text="Параметры" VerticalAlignment="Center"/>
           </StackPanel>
         </MenuItem.Header>
         <MenuItem Name="ConnectMenu" Header="Подключения Ctrl+P" Click="Param_Click">
           <MenuItem.Icon>
             <!-- Иконка для подменю -->
-            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/networking.png" Width="16" Height="16"/>
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/networking1.png" Width="16" Height="16"/>
           </MenuItem.Icon>
         </MenuItem>
         <MenuItem IsVisible="False">
@@ -145,28 +144,28 @@
                 <StackPanel Orientation="Horizontal" Height="40">
 
                   <Button Name="button3"  Width="40" Click="OpenButton_Click"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/add.png" Width="15" Height="17" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/addt.png" Width="22" Height="22" />
                   
                   </Button>
                   <!--<Button Name="button4" Content="🗑" Width="40" Click="DeleteButton_Click" Foreground="Red"/>-->
                   <Button Name="button4" Width="40" Click="DeleteButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/deletT.png" Width="15" Height="17" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delt.png" Width="22" Height="22" />
                   </Button>
                   <!--<Button Name="button2" Content="🚫" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                   <Button Name="button2" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delete.png" Width="15" Height="17" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delj.png" Width="22" Height="22" />
                    </Button>
                   <!--<Button Name="button1" Content="✏" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                   <Button Name="button1" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/edit.png" Width="15" Height="17" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/editj1.png" Width="22" Height="22" />
                   </Button>
                   <!--<Button Name="button5" Content="ℹ" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                   <Button Name="button5" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/update.png" Width="15" Height="17" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/update1.png" Width="22" Height="22" />
                   </Button>
                 </StackPanel>
                 </Border>
-                <ListBox x:Name="DataListBox" Margin="0,5,0,5"
+                <ListBox x:Name="DataListBox" Margin="0,0,0,5"
                          Padding="0"
                          HorizontalAlignment="Stretch"
                          VerticalAlignment="Stretch" FontSize="12" FontFamily="Consolas">
@@ -204,24 +203,22 @@
                     <StackPanel Orientation="Horizontal" Height="40">
                       <!--<Button Name="button9" Content="🗑" Width="40" Click="DeleteObjectButton_Click" Margin="5,0,0,0" />-->
                       <Button Name="button9" Width="40" Click="DeleteObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/deletT.png" Width="15" Height="17" />
+                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delt.png" Width="22" Height="22" />
                       </Button>
                       <!--<Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                       <Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                      <Image Source="avares://LEAD_OLAP_DESINGER/Assets/edit.png" Width="15" Height="17" />
+                      <Image Source="avares://LEAD_OLAP_DESINGER/Assets/edito.png" Width="22" Height="22" />
                         </Button>
                       <!--<Button Name="button7" Content="🡸" Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                       <Button Name="button7"  Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/edit2.png" Width="15" Height="17" />
+                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/addo.png" Width="22" Height="22" />
                       </Button>
                     </StackPanel>
                   </Border>
                   
                   <StackPanel Orientation="Vertical" Grid.Row="1">
-
-                 
                   <!-- Список объектов -->
-                  <DataGrid IsVisible="False" x:Name="gridObjects"
+                    <DataGrid IsVisible="False" x:Name="gridObjects"
                             Grid.Row="1"
                             ItemsSource="{Binding ObjectList}"
                             AutoGenerateColumns="False"
@@ -239,11 +236,33 @@
                   </DataGrid>
                     <Grid>
                       <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*" /> 
                       </Grid.RowDefinitions>
 
+                      <Grid Focusable="False" Margin="45,0,5,0" IsVisible="False">
+                        <Grid.ColumnDefinitions>
+                          <StaticResource ResourceKey="Column1"/>
+                          <StaticResource ResourceKey="Column2"/>
+                          <StaticResource ResourceKey="Column3"/>
+                          <StaticResource ResourceKey="Column4"/>
+                          <StaticResource ResourceKey="Column5"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
+                          <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
+                        </Border>
+                        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
+                        <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
+                          <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
+                        </Border>
+                        <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast" ResizeDirection="Columns"/>
+                        <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
+                          <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
+                        </Border>
+                      </Grid>
                       <TreeView Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged" PointerMoved="TreeObj_PointerMoved"
-                       Margin="5,0,5,5" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
+                       Margin="5,0,5,5" Grid.Row="1" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
                         <TreeView.DataTemplates>
                           <!-- Корневой узел с заголовками (отображается один раз в TreeView) -->
                           <TreeDataTemplate DataType="{x:Type local:HeaderNode}" ItemsSource="{Binding Children}">
@@ -259,11 +278,11 @@
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"/>
+                              <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"/>
+                              <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
@@ -286,23 +305,23 @@
                                 <StaticResource ResourceKey="Column5"/>
                               </Grid.ColumnDefinitions>
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock  Text="{Binding ObjectName}" Grid.Column="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                                <TextBlock  Text="{Binding ObjectName}" Grid.Column="0" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
                              
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding ObjectDescription}" Grid.Column="1" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                                <TextBlock Text="{Binding ObjectDescription}" Grid.Column="1" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
-                             
+                              
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding ObjectType}" Grid.Column="2" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                                <TextBlock Text="{Binding ObjectType}" Grid.Column="2" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
                             </Grid>
                           </DataTemplate>
                           
                         </TreeView.DataTemplates>
                       </TreeView>
+               
                     </Grid>
-
                     
                   </StackPanel>
                 </Grid>

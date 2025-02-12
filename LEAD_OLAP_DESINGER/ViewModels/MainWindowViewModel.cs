@@ -37,6 +37,14 @@ namespace LEAD_OLAP_DESINGER.ViewModels
             }
         }
 
+        private static Boolean _IsReturnValue = false;
+        public static Boolean IsReturnValue
+        {
+            get { return _IsReturnValue; }
+            set { _IsReturnValue = value;  }
+        }
+
+
         public static GridLength Column2Width
         {
             get => _column2Width;

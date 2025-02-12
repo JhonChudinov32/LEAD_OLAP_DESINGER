@@ -47,9 +47,7 @@ public partial class ObjectDialog : Window
                     // Доступ к соединению
                     SqlConnection connection = dbConnection.Cnn;
 
-
                     // Заполнение списка классов
-
                     HasValues = false;
 
                     string commandStringClasses = "SELECT tid, ClassName FROM ReporterClasses with (nolock) WHERE System_id = @SystemId";
@@ -151,7 +149,6 @@ public partial class ObjectDialog : Window
                             HasValues = false;
 
                             DimensionsCombo.Items.Clear();
-
 
                             while (reader.Read())
                             {
@@ -389,36 +386,57 @@ public partial class ObjectDialog : Window
 
         if ((IsContinue) && (!IsUpdate))
         {
-            using (var dbConnection = new Connect())
+            if (MainWindowViewModel.dbms == DBMS.MS)
             {
-                // Доступ к соединению
-                SqlConnection connection = dbConnection.Cnn;
-
-                string commandString = "SELECT cnt = count(*) FROM ReporterObjects with (nolock) WHERE ObjectName = @ObjectName AND System_id = @System_id";
-
-                // Выполнение операций с базой данных
-                using (var command = new SqlCommand(commandString, connection))
+                using (var dbConnection = new Connect())
                 {
-                    command.Parameters.AddWithValue("@ObjectName", ObjectName.Text);
-                    command.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
+                    // Доступ к соединению
+                    SqlConnection connection = dbConnection.Cnn;
 
-                    int ThisCounter = 0;
+                    string commandString = "SELECT COUNT(*) FROM ReporterObjects WITH (NOLOCK) WHERE ObjectName = @ObjectName AND System_id = @System_id";
 
-                    using (var reader = command.ExecuteReader())
+                    using (var command = new SqlCommand(commandString, connection))
                     {
-                        while (reader.Read())
+                        command.Parameters.AddWithValue("@ObjectName", ObjectName.Text);
+                        command.Parameters.AddWithValue("@System_id", MainWindowViewModel.System_id);
+
+                        int ThisCounter = Convert.ToInt32(command.ExecuteScalar());
+
+                        if (ThisCounter > 0)
                         {
-                            ThisCounter = reader.GetInt32(0);
+                            IsContinue = false;
+                            MessageDialog.Show("Ошибка", "Объект с таким именем был определен ранее");
                         }
-                        reader.Close();
                     }
-                    if (ThisCounter > 0)
+                }
+
+            }
+            else if (MainWindowViewModel.dbms == DBMS.PG)
+            {
+                using (var dbConnection = new ConnectPG())
+                {
+                    // Получаем соединение
+                    NpgsqlConnection connection = dbConnection.Cnn;
+
+                    string commandString = "SELECT COUNT(*) FROM ReporterObjects WHERE ObjectName = @ObjectName AND System_id = @System_id";
+
+                    using (var command = new NpgsqlCommand(commandString, connection))
                     {
-                        IsContinue = false;
-                        MessageDialog.Show("Ошибка", "Объект с таким именем был определен ранее");
+                        command.Parameters.AddWithValue("@ObjectName", NpgsqlTypes.NpgsqlDbType.Text, Convert.ToString(ObjectName.Text));
+                        command.Parameters.AddWithValue("@System_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
+
+                        int ThisCounter = Convert.ToInt32(command.ExecuteScalar());
+
+                        if (ThisCounter > 0)
+                        {
+                            IsContinue = false;
+                            MessageDialog.Show("Ошибка", "Объект с таким именем был определен ранее");
+                        }
                     }
                 }
             }
+
+
 
         }
 
@@ -458,10 +476,10 @@ public partial class ObjectDialog : Window
 
             ObjectType = TabControl.SelectedIndex;
             ReturnObjectName = ObjectName.Text;
-            ReturnSelectStatement = SelectStatement.Text;
-            ReturnWhereStatement = WhereStatement.Text;
-            ReturnIsNumeric = (bool)IsNumeric.IsChecked;
-            ReturnIsFloat = (bool)IsFloat.IsChecked;
+            ReturnSelectStatement = string.IsNullOrWhiteSpace(SelectStatement.Text) ? "" : SelectStatement.Text;
+            ReturnWhereStatement = string.IsNullOrWhiteSpace(WhereStatement.Text) ? "" : WhereStatement.Text;
+            ReturnIsNumeric = IsNumeric.IsChecked ?? false;
+            ReturnIsFloat = IsFloat.IsChecked ?? false;
             Close();
         }
         else
