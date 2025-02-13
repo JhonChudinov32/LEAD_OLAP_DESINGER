@@ -3250,7 +3250,7 @@ VALUES (@System_id, @ReporterClass_id, @ReporterDimension_id, @DetailName, @Asso
       
         private async Task FinalizeObjectCreation(SqlCommand command, ObjectDialog form, string dimensionId, string measureId, string detailId, string guid)
         {
-            string objectDescription = GenerateObjectDescription(form.ReturnObjectName);
+            //string objectDescription = GenerateObjectDescription(form.ReturnObjectName);
 
             command.CommandText = @"INSERT INTO ReporterObjects (System_id, ObjectName, ObjectDescription, ReporterDimension_id, ReporterMeasure_id, ReporterDetail_id, ReporterClass_id, IsNumeric, [GUID], ReporterLayer_id)
 VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @ReporterMeasure_id, @ReporterDetail_id, @ReporterClass_id, @IsNumeric, @GUID, @ReporterLayer_id)";
@@ -3258,7 +3258,7 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
             command.Parameters.Clear();
             command.Parameters.AddWithValue("@System_id", MainWindowViewModel.System_id);
             command.Parameters.AddWithValue("@ObjectName", form.ReturnObjectName);
-            command.Parameters.AddWithValue("@ObjectDescription", objectDescription);
+            command.Parameters.AddWithValue("@ObjectDescription", form.ReturnDescription);
             command.Parameters.AddWithValue("@ReporterDimension_id", (object?)dimensionId ?? DBNull.Value);
             command.Parameters.AddWithValue("@ReporterMeasure_id", (object?)measureId ?? DBNull.Value);
             command.Parameters.AddWithValue("@ReporterDetail_id", (object?)detailId ?? DBNull.Value);
@@ -3286,14 +3286,14 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
 
         private async Task FinalizeObjectCreationPG(NpgsqlCommand command, ObjectDialog form, string dimensionId, string measureId, string detailId, string guid)
         {
-            string objectDescription = GenerateObjectDescription(form.ReturnObjectName);
+            //string objectDescription = GenerateObjectDescription(form.ReturnObjectName);
             // Параметризованный запрос для PostgreSQL
             command.CommandText = @"INSERT INTO ReporterObjects (System_id, ObjectName,ObjectDescription, ReporterDimension_id, ReporterMeasure_id, ReporterDetail_id, ReporterClass_id, IsNumeric, GUID, ReporterLayer_id) VALUES (@System_id, @ObjectName,@ObjectDescription, @ReporterDimension_id, @ReporterMeasure_id, @ReporterDetail_id, @ReporterClass_id, @IsNumeric, @GUID, @ReporterLayer_id)";
 
             // Добавление параметров
             command.Parameters.AddWithValue("@System_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
             command.Parameters.AddWithValue("@ObjectName", NpgsqlTypes.NpgsqlDbType.Text, Convert.ToString(form.ReturnObjectName.Replace("'", "''")));  // Замена кавычек для защиты от SQL инъекций
-            command.Parameters.AddWithValue("@ObjectDescription", NpgsqlTypes.NpgsqlDbType.Text, Convert.ToString(objectDescription));
+            command.Parameters.AddWithValue("@ObjectDescription", NpgsqlTypes.NpgsqlDbType.Text, Convert.ToString(form.ReturnDescription.Replace("'", "''")));
             command.Parameters.AddWithValue("@ReporterDimension_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(dimensionId == "NULL" ? (object)DBNull.Value : dimensionId));
             command.Parameters.AddWithValue("@ReporterMeasure_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(measureId == "NULL" ? (object)DBNull.Value : measureId));
             command.Parameters.AddWithValue("@ReporterDetail_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(detailId == "NULL" ? (object)DBNull.Value : detailId));

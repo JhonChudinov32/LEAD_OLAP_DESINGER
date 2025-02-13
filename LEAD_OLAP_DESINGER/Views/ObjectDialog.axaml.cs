@@ -20,7 +20,7 @@ public partial class ObjectDialog : Window
 
     // Возвращаемые значения
     public string ReporterClass_id, ReporterAggregate_id, ReporterDimension_id, ReturnTable_id;
-    public string ReturnObjectName, ReturnSelectStatement, ReturnWhereStatement;
+    public string ReturnObjectName, ReturnSelectStatement, ReturnWhereStatement, ReturnDescription;
     public bool ReturnIsNumeric, ReturnIsFloat;
 
     public List<BindValues> ReporterClasses, AggregateFunctions, ReporterDimensions, ReporterTables;
@@ -478,6 +478,7 @@ public partial class ObjectDialog : Window
             ReturnObjectName = ObjectName.Text;
             ReturnSelectStatement = string.IsNullOrWhiteSpace(SelectStatement.Text) ? "" : SelectStatement.Text;
             ReturnWhereStatement = string.IsNullOrWhiteSpace(WhereStatement.Text) ? "" : WhereStatement.Text;
+            ReturnDescription =  string.IsNullOrWhiteSpace(Description.Text) ? "" : Description.Text;
             ReturnIsNumeric = IsNumeric.IsChecked ?? false;
             ReturnIsFloat = IsFloat.IsChecked ?? false;
             Close();
