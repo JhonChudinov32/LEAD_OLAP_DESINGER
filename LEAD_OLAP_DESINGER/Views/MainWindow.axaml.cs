@@ -1228,7 +1228,8 @@ namespace LEAD_OLAP_DESINGER.Views
         public CustomPanelReturn CreateCustomPanel(string panelName, object parentObject, string tableName, int x, int y, int tableId)
         {
             // Получаем ресурсы цветов
-            var secondaryColor = Color.Parse("#7a9fff");
+            //var secondaryColor = Color.Parse("#7a9fff");
+            var secondaryColor = Color.Parse("#e9efef");
             var backgroundColor = Color.Parse("#f0f4f8");
             var borderColor = Color.Parse("#D1D1D1");
             var textColor = Color.Parse("#120033");
@@ -1541,7 +1542,7 @@ namespace LEAD_OLAP_DESINGER.Views
                     else if (Table_id != CurrentTable_id)
                     {
                         //CurrentHeader.Background = new SolidColorBrush(Color.Parse("#F4A460"));
-                        CurrentHeader.Background = new SolidColorBrush(Color.Parse("#7a9fff"));
+                        CurrentHeader.Background = new SolidColorBrush(Color.Parse("#e9efef"));
                         CurrentHeader = headerPanel;
                         CurrentPanel = thisPanel;
                         UpdateCurrentPanel(thisPanel);
@@ -3458,6 +3459,9 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
 
                         // Установка имени объекта
                         myForm.FindControl<TextBox>("ObjectName").Text = selectedObject.ObjectName;
+
+                        // Установка имени объекта
+                        myForm.FindControl<TextBox>("Description").Text = selectedObject.ObjectDescription;
 
                         // Установка текста выборки
                         myForm.FindControl<TextBox>("SelectStatement").Text = SelectStatement;

@@ -24,9 +24,9 @@
   <Window.Resources>
     <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
 
-    <ColumnDefinition x:Key="Column1" Width="50"/>
+    <ColumnDefinition x:Key="Column1" Width="120"/>
     <ColumnDefinition x:Key="Column2" Width="1"/>
-    <ColumnDefinition x:Key="Column3" Width="50"/>
+    <ColumnDefinition x:Key="Column3" Width="120"/>
     <ColumnDefinition x:Key="Column4" Width="1"/>
     <ColumnDefinition x:Key="Column5" Width="*"/>
 
@@ -71,7 +71,7 @@
     <Grid Name="gridMain" DockPanel.Dock="Top">
       <Grid.ColumnDefinitions>
         <!-- Левая часть: фиксированная ширина -->
-        <ColumnDefinition Width="255" MinWidth="255"/>
+        <ColumnDefinition Width="400" MinWidth="255"/>
         <!-- Разделитель -->
         <ColumnDefinition Width="Auto"/>
         <!-- Правая часть: занимает оставшееся пространство -->
