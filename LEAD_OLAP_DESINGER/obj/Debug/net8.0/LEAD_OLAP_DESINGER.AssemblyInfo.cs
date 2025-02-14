@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LogistiX")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+eb2acb88f5497e24036dacb1afe3b488f6ba29f9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+1dbcc19e034c9612f1b97bbec2c5b9ff1244ccf1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Olap дизайнер")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LEAD_OLAP_DESINGER")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

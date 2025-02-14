@@ -259,6 +259,11 @@ namespace LEAD_OLAP_DESINGER.Views
             {
                 if (MainWindowViewModel.conClose == true)
                 {
+                    //Делаем активными компоненты управления
+                    LayerComboBox.IsEnabled = true;
+                    DataButton.IsEnabled = true;
+                    ObjectButton.IsEnabled = true;
+
                     Settings.SettingUpdate();
                     LoadLayers();
                     await InitializeAsync();

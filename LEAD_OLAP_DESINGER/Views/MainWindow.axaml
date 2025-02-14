@@ -46,14 +46,14 @@
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <!-- Иконка для пункта меню -->
-            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/gear1.png" Width="14" Height="14" Margin="0,0,5,0"/>
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_settings.png" Width="14" Height="14" Margin="0,0,5,0"/>
             <TextBlock Text="Параметры" VerticalAlignment="Center"/>
           </StackPanel>
         </MenuItem.Header>
         <MenuItem Name="ConnectMenu" Header="Подключения Ctrl+P" Click="Param_Click">
           <MenuItem.Icon>
             <!-- Иконка для подменю -->
-            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/networking1.png" Width="16" Height="16"/>
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_server_remote_addserver.png" Width="16" Height="16"/>
           </MenuItem.Icon>
         </MenuItem>
         <MenuItem IsVisible="False">
@@ -129,7 +129,7 @@
                       FontFamily="Consolas"
                       FontSize="12"
                       Grid.Column="1"
-                      Margin="5,5,10,0"/>
+                      Margin="5,5,10,0" IsEnabled="False"/>
           </Grid>
         
         
@@ -141,27 +141,27 @@
               <StackPanel Orientation="Vertical">
                
                 <Border BorderThickness="0" BorderBrush="LightGray" Margin="2,2,2,2" Padding="2,0,0,0">
-                <StackPanel Orientation="Horizontal" Height="40">
+                <StackPanel Orientation="Horizontal" Height="40" Name="DataButton" IsEnabled="false">
 
                   <Button Name="button3"  Width="40" Click="OpenButton_Click"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/addt.png" Width="22" Height="22" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_component_addcomponent.png" Width="22" Height="22" />
                   
                   </Button>
                   <!--<Button Name="button4" Content="🗑" Width="40" Click="DeleteButton_Click" Foreground="Red"/>-->
                   <Button Name="button4" Width="40" Click="DeleteButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delt.png" Width="22" Height="22" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_component_delcomponent.png" Width="22" Height="22" />
                   </Button>
                   <!--<Button Name="button2" Content="🚫" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                   <Button Name="button2" Width="40" Click="DisableButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delj.png" Width="22" Height="22" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_association_delassociation.png" Width="22" Height="22" />
                    </Button>
                   <!--<Button Name="button1" Content="✏" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                   <Button Name="button1" Width="40" Click="EditButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/editj1.png" Width="22" Height="22" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_association_editassociation.png" Width="22" Height="22" />
                   </Button>
                   <!--<Button Name="button5" Content="ℹ" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                   <Button Name="button5" Width="40" Click="InfoButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/update1.png" Width="22" Height="22" />
+                    <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_activity.png" Width="22" Height="22" />
                   </Button>
                 </StackPanel>
                 </Border>
@@ -200,19 +200,20 @@
 
                   <!-- Панель кнопок -->
                   <Border BorderThickness="0" BorderBrush="LightGray" Margin="2,2,2,2" Padding="2,0,0,0">
-                    <StackPanel Orientation="Horizontal" Height="40">
+                    
+                    <StackPanel Orientation="Horizontal" Height="40" Name="ObjectButton" IsEnabled="false">
+                      <!--<Button Name="button7" Content="🡸" Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
+                      <Button Name="button7"  Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
+                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_field_addfield.png" Width="22" Height="22" />
+                      </Button>
                       <!--<Button Name="button9" Content="🗑" Width="40" Click="DeleteObjectButton_Click" Margin="5,0,0,0" />-->
                       <Button Name="button9" Width="40" Click="DeleteObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/delt.png" Width="22" Height="22" />
+                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_field_delfield.png" Width="22" Height="22" />
                       </Button>
                       <!--<Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
                       <Button Name="button6" Content="✏" Width="40" Click="EditObjectButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                      <Image Source="avares://LEAD_OLAP_DESINGER/Assets/edito.png" Width="22" Height="22" />
+                      <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_field_editfield.png" Width="22" Height="22" />
                         </Button>
-                      <!--<Button Name="button7" Content="🡸" Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2"/>-->
-                      <Button Name="button7"  Width="40" Click="BackButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="1,2,1,2">
-                        <Image Source="avares://LEAD_OLAP_DESINGER/Assets/addo.png" Width="22" Height="22" />
-                      </Button>
                     </StackPanel>
                   </Border>
                   
