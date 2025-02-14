@@ -1233,7 +1233,6 @@ namespace LEAD_OLAP_DESINGER.Views
         public CustomPanelReturn CreateCustomPanel(string panelName, object parentObject, string tableName, int x, int y, int tableId)
         {
             // Получаем ресурсы цветов
-            //var secondaryColor = Color.Parse("#7a9fff");
             var secondaryColor = Color.Parse("#e9efef");
             var backgroundColor = Color.Parse("#f0f4f8");
             var borderColor = Color.Parse("#D1D1D1");
@@ -1449,34 +1448,58 @@ namespace LEAD_OLAP_DESINGER.Views
         private bool _isResizing = false;
         private double _lastMouseY;
 
-        private void GridSplitter_DragDelta(object? sender, VectorEventArgs e)
+        private void GridSplitter_DragDelta(object? sender, PointerEventArgs e)
         {
-            if (sender is GridSplitter splitter)
-            {
-                var parentGrid = splitter.Parent as Grid;
-                if (parentGrid == null) return;
+            //if (sender is GridSplitter splitter)
+            //{
+            //    var parentGrid = splitter.Parent as Grid;
+            //    if (parentGrid == null) return;
 
-                int columnIndex = Grid.GetColumn(splitter);
+            //    int columnIndex = Grid.GetColumn(splitter);
 
-                if (columnIndex == 1) // Первый сплиттер
-                {
-                    if (MainWindowViewModel.Column1Width.GridUnitType == GridUnitType.Star)
-                    {
-                        MainWindowViewModel.Column1Width = new GridLength(MainWindowViewModel.Column1Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
-                    }
+            //    var delta = e.GetPosition(parentGrid).X - splitter.Bounds.Left;
 
-                    MainWindowViewModel.Column1Width = new GridLength(Math.Max(0, MainWindowViewModel.Column1Width.Value + e.Vector.X), GridUnitType.Pixel);
-                }
-                else if (columnIndex == 3) // Второй сплиттер
-                {
-                    if (MainWindowViewModel.Column2Width.GridUnitType == GridUnitType.Star)
-                    {
-                        MainWindowViewModel.Column2Width = new GridLength(MainWindowViewModel.Column2Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
-                    }
+            //    //if (columnIndex == 1) // Первый сплиттер
+            //    //{
+            //    //    if (MainWindowViewModel.Column1Width.GridUnitType == GridUnitType.Star)
+            //    //    {
+            //    //        MainWindowViewModel.Column1Width = new GridLength(MainWindowViewModel.Column1Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
+            //    //    }
 
-                    MainWindowViewModel.Column2Width = new GridLength(Math.Max(0, MainWindowViewModel.Column2Width.Value + e.Vector.X), GridUnitType.Pixel);
-                }
-            }
+            //    //    MainWindowViewModel.Column1Width = new GridLength(Math.Max(0, MainWindowViewModel.Column1Width.Value + (e.Vector.Length-e.Vector.X)), GridUnitType.Pixel);
+
+            //    //}
+            //    //else if (columnIndex == 3) // Второй сплиттер
+            //    //{
+            //    //    if (MainWindowViewModel.Column2Width.GridUnitType == GridUnitType.Star)
+            //    //    {
+            //    //        MainWindowViewModel.Column2Width = new GridLength(MainWindowViewModel.Column2Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
+            //    //    }
+
+            //    //    MainWindowViewModel.Column2Width = new GridLength(Math.Max(0, MainWindowViewModel.Column2Width.Value + (e.Vector.Length - e.Vector.X)), GridUnitType.Pixel);
+            //    //}
+            //    if (columnIndex == 1) // Первый сплиттер
+            //    {
+            //        // Если колонка в Grid используется с единицами GridUnitType.Star, преобразуем в пиксели
+            //        if (MainWindowViewModel.Column1Width.GridUnitType == GridUnitType.Star)
+            //        {
+            //            MainWindowViewModel.Column1Width = new GridLength(MainWindowViewModel.Column1Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
+            //        }
+
+            //        // Обновляем ширину колонки в зависимости от движения сплиттера
+            //        MainWindowViewModel.Column1Width = new GridLength(Math.Max(0, MainWindowViewModel.Column1Width.Value + delta), GridUnitType.Pixel);
+            //    }
+            //    else if (columnIndex == 3) // Второй сплиттер
+            //    {
+            //        if (MainWindowViewModel.Column2Width.GridUnitType == GridUnitType.Star)
+            //        {
+            //            MainWindowViewModel.Column2Width = new GridLength(MainWindowViewModel.Column2Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
+            //        }
+
+            //        // Обновляем ширину второй колонки
+            //        MainWindowViewModel.Column2Width = new GridLength(Math.Max(0, MainWindowViewModel.Column2Width.Value + delta), GridUnitType.Pixel);
+            //    }
+            //}
         }
 
 
@@ -1509,51 +1532,99 @@ namespace LEAD_OLAP_DESINGER.Views
             DragOffset = e.GetPosition(sender as Visual);
 
             //+
+            //if (elementName == "PANEL_TITLE")
+            //{
+            //    IsMoveMode = true;
+
+            //    var headerPanel = sender as Border;
+            //    var thisPanel = GetParentPanel(headerPanel);
+            //    var textforeground = FindTextBlock(headerPanel);
+
+
+
+            //    if (thisPanel != null)
+            //    {
+            //        CurrentTableX = (int)Canvas.GetLeft(thisPanel);
+            //        CurrentTableY = (int)Canvas.GetTop(thisPanel);
+            //        headerPanel.Background = new SolidColorBrush(Color.Parse("#3A76D1"));
+
+            //        textforeground.Foreground = new SolidColorBrush(Colors.White);
+
+
+            //        PanelTag ThisTag = (PanelTag)thisPanel.Tag;
+
+            //        String Table_id = ThisTag.Table_id.ToString();
+            //        String CurrentTable_id;
+
+            //        if (CurrentPanel == null)
+            //        {
+            //            CurrentTable_id = "";
+            //        }
+            //        else
+            //        {
+            //            PanelTag CurrentTag = (PanelTag)CurrentPanel.Tag;
+            //            CurrentTable_id = CurrentTag.Table_id.ToString();
+            //        }
+
+            //        if (CurrentPanel == null)
+            //        {
+            //            CurrentPanel = thisPanel;
+            //            CurrentHeader = headerPanel;
+            //            UpdateCurrentPanel(thisPanel);
+            //        }
+            //        else if (Table_id != CurrentTable_id)
+            //        {
+            //            textforeground.Foreground = new SolidColorBrush(Colors.Black);
+            //            CurrentHeader.Background = new SolidColorBrush(Color.Parse("#e9efef"));
+
+            //            CurrentHeader = headerPanel;
+            //            CurrentPanel = thisPanel;
+            //            UpdateCurrentPanel(thisPanel);
+            //        }
+            //    }
+
+            //}
             if (elementName == "PANEL_TITLE")
             {
                 IsMoveMode = true;
 
                 var headerPanel = sender as Border;
                 var thisPanel = GetParentPanel(headerPanel);
-               
+                var textforeground = FindTextBlock(headerPanel);
 
                 if (thisPanel != null)
                 {
+                    // **Сброс цвета предыдущего заголовка перед установкой нового**
+                    if (CurrentHeader != null && CurrentHeader != headerPanel)
+                    {
+                        CurrentHeader.Background = new SolidColorBrush(Color.Parse("#e9efef")); // Цвет неактивного заголовка
+                        var prevText = FindTextBlock(CurrentHeader);
+                        if (prevText != null)
+                        {
+                            prevText.Foreground = new SolidColorBrush(Colors.Black); // Черный текст у неактивного заголовка
+                        }
+                    }
+
+                    // **Обновляем текущие координаты панели**
                     CurrentTableX = (int)Canvas.GetLeft(thisPanel);
                     CurrentTableY = (int)Canvas.GetTop(thisPanel);
+
+                    // **Меняем цвет активного заголовка**
                     headerPanel.Background = new SolidColorBrush(Color.Parse("#3A76D1"));
+                    if (textforeground != null)
+                    {
+                        textforeground.Foreground = new SolidColorBrush(Colors.White);
+                    }
 
                     PanelTag ThisTag = (PanelTag)thisPanel.Tag;
+                    string Table_id = ThisTag.Table_id.ToString();
+                    string CurrentTable_id = CurrentPanel == null ? "" : ((PanelTag)CurrentPanel.Tag).Table_id.ToString();
 
-                    String Table_id = ThisTag.Table_id.ToString();
-                    String CurrentTable_id;
-
-                    if (CurrentPanel == null)
-                    {
-                        CurrentTable_id = "";
-                    }
-                    else
-                    {
-                        PanelTag CurrentTag = (PanelTag)CurrentPanel.Tag;
-                        CurrentTable_id = CurrentTag.Table_id.ToString();
-                    }
-
-                    if (CurrentPanel == null)
-                    {
-                        CurrentPanel = thisPanel;
-                        CurrentHeader = headerPanel;
-                        UpdateCurrentPanel(thisPanel);
-                    }
-                    else if (Table_id != CurrentTable_id)
-                    {
-                        //CurrentHeader.Background = new SolidColorBrush(Color.Parse("#F4A460"));
-                        CurrentHeader.Background = new SolidColorBrush(Color.Parse("#e9efef"));
-                        CurrentHeader = headerPanel;
-                        CurrentPanel = thisPanel;
-                        UpdateCurrentPanel(thisPanel);
-                    }
+                    // **Обновляем текущий выбранный заголовок и панель**
+                    CurrentHeader = headerPanel;
+                    CurrentPanel = thisPanel;
+                    UpdateCurrentPanel(thisPanel);
                 }
-
             }
             //+
             else if (elementName == "DRAGDROP_ELEMENT" && sender is ListBoxItem listBoxItem)
@@ -1643,7 +1714,7 @@ namespace LEAD_OLAP_DESINGER.Views
                                 // Доступ к соединению
                                 var connection = dbConnection.Cnn;
 
-                               
+
                                 // Обновление координат в базе данных
                                 const string query = @"UPDATE ReporterTables SET X = @x, Y = @y WHERE System_id = @SystemId AND tid = @TableId AND ReporterLayer_id = @LayerId";
 
@@ -1661,15 +1732,30 @@ namespace LEAD_OLAP_DESINGER.Views
                                 }
                             }
                         }
-                       
+
                     }
                 }
             }
+
             else if (elementName == "DRAGDROP_ELEMENT")
             {
                 IsDragDropMode = false;
                 dragBoxFromMouseDownRect = new Rect(0, 0, 0, 0);
             }
+        }
+
+        private TextBlock FindTextBlock(Control control)
+        {
+           
+            if (control is Border border)
+            {
+                if (border.Child is TextBlock textBlock)
+                {
+                    return textBlock;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

@@ -24,9 +24,9 @@
   <Window.Resources>
     <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
 
-    <ColumnDefinition x:Key="Column1" Width="120"/>
+    <ColumnDefinition x:Key="Column1" Width="*"/>
     <ColumnDefinition x:Key="Column2" Width="1"/>
-    <ColumnDefinition x:Key="Column3" Width="120"/>
+    <ColumnDefinition x:Key="Column3" Width="*"/>
     <ColumnDefinition x:Key="Column4" Width="1"/>
     <ColumnDefinition x:Key="Column5" Width="*"/>
 
@@ -241,7 +241,7 @@
                         <RowDefinition Height="*" /> 
                       </Grid.RowDefinitions>
 
-                      <Grid Focusable="False" Margin="45,0,5,0" IsVisible="False">
+                      <!--<Grid Focusable="False" Margin="45,0,5,0" IsVisible="False">
                         <Grid.ColumnDefinitions>
                           <StaticResource ResourceKey="Column1"/>
                           <StaticResource ResourceKey="Column2"/>
@@ -253,15 +253,15 @@
                         <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                           <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                         </Border>
-                        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
+                        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
                         <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                           <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                         </Border>
-                        <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast" ResizeDirection="Columns"/>
+                        <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast" ResizeDirection="Columns"/>
                         <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                           <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                         </Border>
-                      </Grid>
+                      </Grid>-->
                       <TreeView Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged" PointerMoved="TreeObj_PointerMoved"
                        Margin="5,0,5,5" Grid.Row="1" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
                         <TreeView.DataTemplates>
@@ -279,11 +279,11 @@
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
+                              <GridSplitter Grid.Column="1" IsVisible="False" HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" DragDelta="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
+                              <GridSplitter Grid.Column="3" IsVisible="False" HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
