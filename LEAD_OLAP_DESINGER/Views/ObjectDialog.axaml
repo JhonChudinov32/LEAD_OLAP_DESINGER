@@ -6,8 +6,7 @@
         WindowStartupLocation="CenterScreen"
         x:Class="LEAD_OLAP_DESINGER.ObjectDialog"
         SizeToContent="WidthAndHeight"
-        Title="Свойства объекта"
-        FontSize="14">
+        Title="Свойства объекта">
 
   <Grid Margin="10">
     <!-- Определение строк -->
@@ -43,7 +42,7 @@
     <TextBox Name="Description" Grid.Row="5" Margin="0,5,0,5" HorizontalAlignment="Stretch"/>
 
     <!-- Чекбоксы -->
-    <CheckBox Name="IsNumeric" Content="Интерпретировать значение, как число" Grid.Row="6" />
+    <CheckBox Name="IsNumeric" Content="Интерпретировать значение, как число" Grid.Row="6"/>
 
     <!-- Таблица -->
     <TextBlock Text="Таблица:" Grid.Row="7" />
@@ -52,17 +51,17 @@
     <!-- Вкладки -->
     <TextBlock Text="Тип и параметры объекта:" Grid.Row="9" />
     <TabControl Name="TabControl" Grid.Row="10" Margin="0,5,0,5" HorizontalAlignment="Stretch">
-      <TabItem Header="Измерение" FontSize="14" FontFamily="Consolas">
+      <TabItem Header="Измерение" >
         <TextBlock Text="Измерение не требует назначения дополнительных параметров" VerticalAlignment="Center" HorizontalAlignment="Center"/>
       </TabItem>
-      <TabItem Header="Мера" FontSize="14" FontFamily="Consolas">
+      <TabItem Header="Мера" >
         <StackPanel>
           <TextBlock Text="Функция агрегирования:" Margin="0,5"/>
           <ComboBox Name="AggregatesCombo" Margin="0,5" HorizontalAlignment="Stretch"/>
           <CheckBox Name="IsFloat" Content="Может содержать дробное значение" Margin="0,10"/>
         </StackPanel>
       </TabItem>
-      <TabItem Header="Детализированное измерение" FontSize="14" FontFamily="Consolas">
+      <TabItem Header="Детализированное измерение" >
         <StackPanel>
           <TextBlock Text="Детализируемое измерение:" Margin="0,5"/>
           <ComboBox Name="DimensionsCombo" Margin="0,5" HorizontalAlignment="Stretch"/>

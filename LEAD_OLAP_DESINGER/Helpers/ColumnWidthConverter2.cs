@@ -13,11 +13,12 @@ namespace LEAD_OLAP_DESINGER.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is double totalWidth)
+            if (value is double width)
             {
-                return new GridLength(totalWidth / 3, GridUnitType.Star);
+                return new GridLength(width, GridUnitType.Pixel);
             }
-            return GridLength.Auto;
+
+            return new GridLength(1, GridUnitType.Star); // Значение по умолчанию
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

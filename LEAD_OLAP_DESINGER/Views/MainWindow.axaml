@@ -23,11 +23,12 @@
     </Design.DataContext>
   <Window.Resources>
     <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
-
+    <l:ColumnWidthConverter2 x:Key="ColumnWidthConverter2"/>
+  
     <ColumnDefinition x:Key="Column1" Width="*"/>
-    <ColumnDefinition x:Key="Column2" Width="1"/>
+    <ColumnDefinition x:Key="Column2" Width="Auto"/>
     <ColumnDefinition x:Key="Column3" Width="*"/>
-    <ColumnDefinition x:Key="Column4" Width="1"/>
+    <ColumnDefinition x:Key="Column4" Width="Auto"/>
     <ColumnDefinition x:Key="Column5" Width="*"/>
 
   </Window.Resources>
@@ -35,7 +36,7 @@
 
   <DockPanel>
     <!-- Верхнее меню -->
-    <Menu DockPanel.Dock="Top" Background="Transparent" FontSize="12" FontFamily="Consolas">
+    <Menu DockPanel.Dock="Top" Background="Transparent">
       <!--
       <MenuItem Header="Файл" >
         <MenuItem Name="ConnectBD" Header="Подключиться  Ctrl+С" Click="Connect_Click"/>
@@ -46,7 +47,7 @@
         <MenuItem.Header>
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <!-- Иконка для пункта меню -->
-            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_settings.png" Width="14" Height="14" Margin="0,0,5,0"/>
+            <Image Source="avares://LEAD_OLAP_DESINGER/Assets/vld_c_settings.png" Width="15" Height="15" Margin="0,0,5,0"/>
             <TextBlock Text="Параметры" VerticalAlignment="Center"/>
           </StackPanel>
         </MenuItem.Header>
@@ -99,13 +100,11 @@
           <TextBlock Text="Подключение:"
                      VerticalAlignment="Center"
                      Margin="5,5,5,0"
-                     FontSize="12"
-                     FontFamily="Consolas"
                      Grid.Column="0"/>
           <ComboBox x:Name="NameBD"
                     VerticalContentAlignment="Center" Margin="5,5,10,0"
                     VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch" Grid.Column="1" FontSize="12" FontFamily="Consolas"
+                    HorizontalAlignment="Stretch" Grid.Column="1"
                     SelectionChanged="ConnectComboBox_SelectionChanged"/>
         </Grid>
      
@@ -120,22 +119,18 @@
             <TextBlock Text="Слой:"
                        VerticalAlignment="Center"
                        Margin="5,5,5,0"
-                       FontSize="12"
-                       FontFamily="Consolas"
                        Grid.Column="0" HorizontalAlignment="Left"/>
             <ComboBox x:Name="LayerComboBox"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
-                      FontFamily="Consolas"
-                      FontSize="12"
                       Grid.Column="1"
                       Margin="5,5,10,0" IsEnabled="False"/>
           </Grid>
         
         
-        <TabControl Name="TabControlName" Grid.Column="0" Grid.Row="2">
+        <TabControl Name="TabControlName" Grid.Column="0" Grid.Row="2" IsEnabled="False">
           <!-- Tab: Данные -->
-          <TabItem Header="Данные" FontSize="14" FontFamily="Consolas">
+          <TabItem Header="Данные">
             <DockPanel>
               <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,5">
               <StackPanel Orientation="Vertical">
@@ -165,10 +160,10 @@
                   </Button>
                 </StackPanel>
                 </Border>
-                <ListBox x:Name="DataListBox" Margin="0,0,0,5"
+                <ListBox x:Name="DataListBox" Margin="5,0,5,5"
                          Padding="0"
                          HorizontalAlignment="Stretch"
-                         VerticalAlignment="Stretch" FontSize="12" FontFamily="Consolas">
+                         VerticalAlignment="Stretch">
                   <ListBox.ItemTemplate>
                     <DataTemplate>
                       <ListBoxItem Padding="0"
@@ -186,7 +181,7 @@
           </TabItem>
 
           <!-- Tab: Объекты -->
-          <TabItem Header="Объекты" FontSize="14" FontFamily="Consolas">
+          <TabItem Header="Объекты">
             <DockPanel>
               <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,5">
                 <Grid>
@@ -276,14 +271,23 @@
                                 <StaticResource ResourceKey="Column5"/>
                               </Grid.ColumnDefinitions>
 
+                              <!-- Колонка 1 -->
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <GridSplitter Grid.Column="1" IsVisible="False" HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
+
+                              <!-- Разделитель между колонками 1 и 3 -->
+                              <Rectangle Grid.Column="1" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter1_Pressed" PointerReleased="Splitter1_Released" PointerMoved="Splitter1_Moved"/>
+
+                              <!-- Колонка 3 -->
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
-                              <GridSplitter Grid.Column="3" IsVisible="False" HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
+
+                              <!-- Разделитель между колонками 3 и 5 -->
+                              <Rectangle Grid.Column="3" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter2_Pressed" PointerReleased="Splitter2_Released" PointerMoved="Splitter2_Moved"/>
+
+                              <!-- Колонка 5 -->
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
@@ -305,16 +309,19 @@
                                 <StaticResource ResourceKey="Column4"/>
                                 <StaticResource ResourceKey="Column5"/>
                               </Grid.ColumnDefinitions>
+                              <!-- Колонка 1 -->
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock  Text="{Binding ObjectName}" Grid.Column="0" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                                <TextBlock Text="{Binding ObjectName}" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
-                             
+
+                              <!-- Колонка 3 -->
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding ObjectDescription}" Grid.Column="1" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                                <TextBlock Text="{Binding ObjectDescription}" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
-                              
+
+                              <!-- Колонка 5 -->
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding ObjectType}" Grid.Column="2" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
+                                <TextBlock Text="{Binding ObjectType}" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
                             </Grid>
                           </DataTemplate>

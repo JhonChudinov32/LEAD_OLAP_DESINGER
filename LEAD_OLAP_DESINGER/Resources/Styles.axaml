@@ -16,6 +16,7 @@
     <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
     <Setter Property="FontWeight" Value="Bold"/>
     <Setter Property="HorizontalAlignment" Value="Center"/>
     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -44,6 +45,7 @@
     <Setter Property="Background" Value="{DynamicResource PrimaryColor}"/>
     <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
     <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
     <Setter Property="FontWeight" Value="Bold"/>
     <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
     <Setter Property="BorderThickness" Value="1"/>
@@ -65,6 +67,7 @@
     <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
     <Setter Property="BorderThickness" Value="0"/>
     <Setter Property="CornerRadius" Value="5"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
   </Style>
   <!-- Стиль для ComboBoxItem (наведение)-->
   <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
@@ -87,6 +90,7 @@
     <Setter Property="Background" Value="{DynamicResource PrimaryColor}"/>
     <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
     <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
     <Setter Property="FontWeight" Value="Normal"/>
     <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
     <Setter Property="BorderThickness" Value="1"/>
@@ -117,6 +121,7 @@
     <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
     <Setter Property="CornerRadius" Value="5"/>
     <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
   </Style>
 
   <!-- Стиль для ListBoxItem -->
@@ -182,7 +187,7 @@
     <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="FontSize" Value="12"/>
-    <Setter Property="FontFamily" Value="Segoe UI"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
     <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
     <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
     <Setter Property="IsReadOnly" Value="True"/>
@@ -202,8 +207,8 @@
     <Setter Property="Background" Value="{DynamicResource RowBackgroundColor}" />
     <Setter Property="Foreground" Value="{DynamicResource RowTextColor}" />
     <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
     <Setter Property="Padding" Value="0"/>
-    <Setter Property="FontFamily" Value="Segoe UI"/>
   </Style>
 
   <!-- Стиль для строки DataGridRow при наведении -->
@@ -242,7 +247,7 @@
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="Padding" Value="5"/>
     <Setter Property="FontSize" Value="12"/>
-    <Setter Property="FontFamily" Value="Segoe UI"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
   </Style>
 
   <!-- Стиль для MenuItem -->
@@ -251,7 +256,8 @@
     <Setter Property="Foreground" Value="{DynamicResource ItemTextColor}"/>
     <Setter Property="Padding" Value="8,5"/>
     <Setter Property="FontSize" Value="12"/>
-    <Setter Property="FontFamily" Value="Segoe UI"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
+    <Setter Property="Height" Value="25"/>
   </Style>
 
   <!-- Стиль для выделенного MenuItem -->
@@ -264,7 +270,38 @@
   <Style Selector="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
     <Setter Property="FontSize" Value="12"/>
-    <Setter Property="FontFamily" Value="Segoe UI"/>
     <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
   </Style>
+
+  <Style Selector="CheckBox">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
+  </Style>
+
+  
+  <Style Selector="CheckBox /template/ Border#NormalRectangle">
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+    <Setter Property="Background" Value="{DynamicResource ItemBackgroundColor}" />
+  </Style>
+
+  <Style Selector="Label">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
+  </Style>
+
+  <Style Selector="TabControl">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
+  </Style>
+
+  <Style Selector="TabItem">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontFamily" Value="{StaticResource MyCustomFont}"/>
+  </Style>
+
+ 
 </Styles>

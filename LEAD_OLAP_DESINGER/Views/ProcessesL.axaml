@@ -1,0 +1,18 @@
+<Window x:Class="LEAD_OLAP_DESINGER.Views.ProcessesL"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        d:DesignHeight="100"
+        Width="150" Height="100"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        WindowStartupLocation="CenterScreen">
+
+  <Image Name="loadingImage" Width="150" Height="100"
+ HorizontalAlignment="Stretch" Margin="20,0,0,0"
+ VerticalAlignment="Stretch">
+  </Image>
+
+</Window>
+

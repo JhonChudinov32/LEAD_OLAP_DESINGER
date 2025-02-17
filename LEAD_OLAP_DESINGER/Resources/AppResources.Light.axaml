@@ -48,4 +48,8 @@
 
   <Color x:Key="SystemControlHighlightListLowBrush">#cae8e6</Color>
   <Color x:Key="SystemControlHighlightAltBaseHighBrush">#eceeee</Color>
+
+  <!-- Определение шрифта -->
+  <FontFamily x:Key="MyCustomFont">Segoe UI</FontFamily>
+ 
 </ResourceDictionary>

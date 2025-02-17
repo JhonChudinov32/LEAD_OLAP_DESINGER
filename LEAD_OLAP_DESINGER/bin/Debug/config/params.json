@@ -1,7 +1,7 @@
 {
   "ConnectionList": [
     {
-      "Id": 2,
+      "Id": 1,
       "nameBD": "LEADWMSTEST",
       "namePlatform": "MS SQL Server",
       "mainIP": "192.168.0.12",
@@ -11,7 +11,7 @@
       "mainPassword": "kJOCRYoRNUqR65E/nbOjfg=="
     },
     {
-      "Id": 3,
+      "Id": 2,
       "nameBD": "LEADWMSTEST(POSTGRES)",
       "namePlatform": "PostgreSQL",
       "mainIP": "192.168.160.21",

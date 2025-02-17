@@ -6,7 +6,6 @@
         x:Class="LEAD_OLAP_DESINGER.ChooseTableDialog"
         WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight"
-        FontSize="14" 
         Title="Выберите таблицу"
         MinWidth="500" MaxHeight="500">
  
@@ -33,9 +32,7 @@
              Grid.Row="1"
              SelectionChanged="TableList_SelectionChanged"
              HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             FontSize="14"
-             FontFamily="Consolas">
+             VerticalAlignment="Stretch">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <ListBoxItem Padding="0"

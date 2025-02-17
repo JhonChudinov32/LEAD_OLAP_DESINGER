@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LEAD_OLAP_DESINGER.Class;
 using LEAD_OLAP_DESINGER.Models;
@@ -19,12 +20,12 @@ namespace LEAD_OLAP_DESINGER.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     {
-      
-        private static GridLength _column1Width = new GridLength(1, GridUnitType.Star);
-        private static GridLength _column2Width = new GridLength(1, GridUnitType.Star);
-        private static GridLength _column3Width = new GridLength(1, GridUnitType.Star);
 
-        public static GridLength Column1Width
+        private static double _column1Width = 200;
+        private static double _column3Width = 300;
+        private static double _column5Width = 300;
+
+        public static double Column1Width
         {
             get => _column1Width;
             set
@@ -37,28 +38,7 @@ namespace LEAD_OLAP_DESINGER.ViewModels
             }
         }
 
-        private static Boolean _IsReturnValue = false;
-        public static Boolean IsReturnValue
-        {
-            get { return _IsReturnValue; }
-            set { _IsReturnValue = value;  }
-        }
-
-
-        public static GridLength Column2Width
-        {
-            get => _column2Width;
-            set
-            {
-                if (_column2Width != value)
-                {
-                    _column2Width = value;
-                    StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Column2Width)));
-                }
-            }
-        }
-
-        public static GridLength Column3Width
+        public static double Column3Width
         {
             get => _column3Width;
             set
@@ -67,17 +47,32 @@ namespace LEAD_OLAP_DESINGER.ViewModels
                 {
                     _column3Width = value;
                     StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Column3Width)));
-
                 }
             }
         }
 
-        public void UpdateColumnWidths(double totalWidth)
+        public static double Column5Width
         {
-            Column1Width = new GridLength(totalWidth * 0.3, GridUnitType.Pixel);
-            Column2Width = new GridLength(totalWidth * 0.4, GridUnitType.Pixel);
-            Column3Width = new GridLength(totalWidth * 0.3, GridUnitType.Pixel);
+            get => _column5Width;
+            set
+            {
+                if (_column5Width != value)
+                {
+                    _column5Width = value;
+                    StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Column5Width)));
+                }
+            }
         }
+
+     
+
+        private static Boolean _IsReturnValue = false;
+        public static Boolean IsReturnValue
+        {
+            get { return _IsReturnValue; }
+            set { _IsReturnValue = value;  }
+        }
+
 
         [ObservableProperty]
         List<ThemeVariantInfo> themeVariants;
@@ -87,7 +82,6 @@ namespace LEAD_OLAP_DESINGER.ViewModels
 
         public MainWindowViewModel(ThemeVariant startupThemeVariant = null)
         {
-           
 
             ThemeVariants = new List<ThemeVariantInfo>()
             {
@@ -120,8 +114,6 @@ namespace LEAD_OLAP_DESINGER.ViewModels
 
         public static ObservableCollection<JoinStructure> JoinLines { get; set; } = new ObservableCollection<JoinStructure>();
 
-        //public ObservableCollection<ReporterNode> League { get; set; } = new ObservableCollection<ReporterNode>();
-
         private ObservableCollection<object> _League;
 
         public ObservableCollection<object> League
@@ -144,14 +136,7 @@ namespace LEAD_OLAP_DESINGER.ViewModels
                     Objects = new ObservableCollection<ReporterObject>(g)
                 })
                 .ToList();
-            //foreach (var g in grouped)
-            //{
-            //    foreach (var obj in g.Objects)
-            //    {
-            //        MessageDialog.Show("", obj.ObjectName + " " + obj.ObjectType);
-            //    }
-            //}
-
+    
             return new ObservableCollection<object>(grouped);
         }
 

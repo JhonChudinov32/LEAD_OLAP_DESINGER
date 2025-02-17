@@ -55,3 +55,6 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [D:/Проекты/LOGISTIX/LEAD_OLAP_DESINGER/LEAD_OLAP_DESINGER/Views/ObjectDialog.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Проекты/LOGISTIX/LEAD_OLAP_DESINGER/LEAD_OLAP_DESINGER/Views/ProcessesL.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

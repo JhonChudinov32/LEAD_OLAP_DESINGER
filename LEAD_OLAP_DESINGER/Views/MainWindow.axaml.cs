@@ -80,6 +80,8 @@ namespace LEAD_OLAP_DESINGER.Views
         private MenuItem? exitMenu;
         private MenuItem? connectBD;
 
+        private Dictionary<string, ColumnDefinition> _columns;
+
         private List<ConnectionData> connectionList = new List<ConnectionData>();
         private readonly ComboBox? nameBD;
         private Grid modalLoadgrid;
@@ -89,6 +91,8 @@ namespace LEAD_OLAP_DESINGER.Views
         public MainWindow()
         {
             InitializeComponent();
+
+           
 
             OnInitialized();
 
@@ -104,6 +108,8 @@ namespace LEAD_OLAP_DESINGER.Views
             connectMenu = this.FindControl<MenuItem>("ConnectMenu");
             exitMenu = this.FindControl<MenuItem>("ExitMenu");
             connectBD = this.FindControl<MenuItem>("ConnectBD");
+
+           
 
             if (visiblePanel != null)
             {
@@ -215,6 +221,8 @@ namespace LEAD_OLAP_DESINGER.Views
 
                 if (existingData.ConnectionList != null)
                 {
+                    // Очищаем коллекцию перед загрузкой новых данных
+                    connectionList.Clear();
                     foreach (var item in existingData.ConnectionList)
                     {
                         var connection = new ConnectionData
@@ -233,8 +241,32 @@ namespace LEAD_OLAP_DESINGER.Views
             }
         }
 
+        /// <summary>
+        /// Отключает компоненты управления.
+        /// </summary>
+        private void DisableControls()
+        {
+            LayerComboBox.IsEnabled = false;
+            DataButton.IsEnabled = false;
+            ObjectButton.IsEnabled = false;
+            TabControlName.IsEnabled = false;
+        }
+
+        /// <summary>
+        /// Активирует компоненты управления.
+        /// </summary>
+        private void EnableControls()
+        {
+            LayerComboBox.IsEnabled = true;
+            DataButton.IsEnabled = true;
+            ObjectButton.IsEnabled = true;
+            TabControlName.IsEnabled = true;
+        }
+
         private async void ConnectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Отключаем компоненты управления во время загрузки
+            DisableControls();
             nameBDSelection();
             try
             {
@@ -259,18 +291,14 @@ namespace LEAD_OLAP_DESINGER.Views
             {
                 if (MainWindowViewModel.conClose == true)
                 {
-                    //Делаем активными компоненты управления
-                    LayerComboBox.IsEnabled = true;
-                    DataButton.IsEnabled = true;
-                    ObjectButton.IsEnabled = true;
+                   EnableControls();
 
                     Settings.SettingUpdate();
                     LoadLayers();
                     await InitializeAsync();
                 }
             }
-         
-            
+   
         }
 
         private bool _isInitializing;
@@ -290,14 +318,27 @@ namespace LEAD_OLAP_DESINGER.Views
                 return;
 
             _isInitializing = true;
+            var progressWindow = new ProcessesL();
+
             try
             {
-                
-                // Выполняем асинхронные операции
-                await DropDataAsync();
-                await LoadTablesAsync();
-                await LoadJoinsAsync();
-                await LoadObjectsAsync();
+
+                // Показываем модальное окно
+                progressWindow.Show();
+
+                // Обновляем прогресс и статус
+                await Task.Run(async () =>
+                {
+                    await DropDataAsync();
+                 
+                    await LoadTablesAsync();
+
+                    await LoadJoinsAsync();
+               
+                    await LoadObjectsAsync();
+                  
+                });
+
             }
             catch (Exception ex)
             {
@@ -309,9 +350,13 @@ namespace LEAD_OLAP_DESINGER.Views
             }
             finally
             {
+                // Закрываем окно после завершения
+                progressWindow.Close();
+              
                 _isInitializing = false;
             }
         }
+
         private void LoadLayers()
         {
             if (MainWindowViewModel.dbms == DBMS.MS)
@@ -569,14 +614,16 @@ namespace LEAD_OLAP_DESINGER.Views
 
             try
             {
-                if(MainWindowViewModel.dbms == DBMS.MS)
+                await Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    using (var dbConnection = new Connect())
+                    if (MainWindowViewModel.dbms == DBMS.MS)
                     {
-                        // Доступ к соединению
-                        SqlConnection connection = dbConnection.Cnn;
+                        using (var dbConnection = new Connect())
+                        {
+                            // Доступ к соединению
+                            SqlConnection connection = dbConnection.Cnn;
 
-                        string stringCommand = @"SELECT 
+                            string stringCommand = @"SELECT 
                                        a.tid, 
                                        a.SourceTable_id, 
                                        a.TargetTable_id, 
@@ -591,91 +638,93 @@ namespace LEAD_OLAP_DESINGER.Views
                                    JOIN ReporterTables AS c WITH (NOLOCK) ON a.TargetTable_id = c.tid
                                    WHERE a.System_id = @SystemId AND a.ReporterLayer_id = @ReporterLayerId";
 
-                        using (var command = new SqlCommand(stringCommand, connection))
-                        {
-                            // Добавление параметров
-                            command.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
-                            command.Parameters.AddWithValue("@ReporterLayerId", MainWindowViewModel.ReporterLayer_id);
-
-                            using (var reader = await command.ExecuteReaderAsync())
+                            using (var command = new SqlCommand(stringCommand, connection))
                             {
-                                while (await reader.ReadAsync())
+                                // Добавление параметров
+                                command.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
+                                command.Parameters.AddWithValue("@ReporterLayerId", MainWindowViewModel.ReporterLayer_id);
+
+                                using (var reader = await command.ExecuteReaderAsync())
                                 {
-                                    SourceTable_id = reader.GetInt32(1);
-                                    TargetTable_id = reader.GetInt32(2);
-
-                                    // Поиск листбоксов, связанных с исходной и целевой таблицами
-                                    SourceListBox = null;
-                                    TargetListBox = null;
-
-                                    SourceIndex = -1;
-                                    TargetIndex = -1;
-
-                                    for (int i = 0; i < MainWindowViewModel.ProcessingTables.Count; i++)
+                                    while (await reader.ReadAsync())
                                     {
-                                        ThisTable = MainWindowViewModel.ProcessingTables[i];
-                                        if (ThisTable.Table_id == SourceTable_id)
+                                        SourceTable_id = reader.GetInt32(1);
+                                        TargetTable_id = reader.GetInt32(2);
+
+                                        // Поиск листбоксов, связанных с исходной и целевой таблицами
+                                        SourceListBox = null;
+                                        TargetListBox = null;
+
+                                        SourceIndex = -1;
+                                        TargetIndex = -1;
+
+                                        for (int i = 0; i < MainWindowViewModel.ProcessingTables.Count; i++)
                                         {
-                                            SourceListBox = ThisTable.CustomList;
-                                            SourceIndex = SourceListBox.Items.IndexOf(reader.GetValue(5));
+                                            ThisTable = MainWindowViewModel.ProcessingTables[i];
+                                            if (ThisTable.Table_id == SourceTable_id)
+                                            {
+                                                SourceListBox = ThisTable.CustomList;
+                                                SourceIndex = SourceListBox.Items.IndexOf(reader.GetValue(5));
+                                            }
+                                            if (ThisTable.Table_id == TargetTable_id)
+                                            {
+                                                TargetListBox = ThisTable.CustomList;
+                                                TargetIndex = TargetListBox.Items.IndexOf(reader.GetValue(6));
+                                            }
+                                            if (SourceListBox != null && TargetListBox != null)
+                                                break;
                                         }
-                                        if (ThisTable.Table_id == TargetTable_id)
-                                        {
-                                            TargetListBox = ThisTable.CustomList;
-                                            TargetIndex = TargetListBox.Items.IndexOf(reader.GetValue(6));
-                                        }
+
                                         if (SourceListBox != null && TargetListBox != null)
-                                            break;
+                                        {
+                                          
+                                            ThisJoin = new JoinStructure();
+
+                                            ThisCoors = GetLineCoors(SourceListBox, TargetListBox, SourceIndex, TargetIndex);
+                                            MyLine = new LineControl(
+                                                OLAPPanel,
+                                                ThisCoors.FromX,
+                                                ThisCoors.FromY,
+                                                ThisCoors.ToX,
+                                                ThisCoors.ToY,
+                                                JoinColor,
+                                                MainWindowViewModel.JoinWidth,
+                                                true); // true для направленной линии
+                                            MyLine.ZIndex = 0; // Линия будет ниже
+                                            ThisJoin.Line = MyLine;
+
+                                            ThisJoin.Join_id = reader.GetValue(3).ToString();
+                                            ThisJoin.SourceColumnName = reader.GetString(5);
+                                            ThisJoin.TargetColumnName = reader.GetString(6);
+                                            ThisJoin.Record_id = reader.GetInt32(0);
+
+                                            ThisJoin.SourceIndex = SourceIndex;
+                                            ThisJoin.SourceListBox = SourceListBox;
+                                            ThisJoin.SourcePanel = GetParentPanel(SourceListBox);
+                                            ThisJoin.SourceTableName = reader.GetString(7);
+                                            ThisJoin.TargetIndex = TargetIndex;
+                                            ThisJoin.TargetListBox = TargetListBox;
+                                            ThisJoin.TargetPanel = GetParentPanel(TargetListBox);
+                                            ThisJoin.TargetTableName = reader.GetString(8);
+                                            ThisJoin.ConditionStatement = reader.GetString(4);
+
+                                            MainWindowViewModel.JoinLines.Add(ThisJoin);
+                                          
+                                        }
                                     }
-
-                                    if (SourceListBox != null && TargetListBox != null)
-                                    {
-                                        ThisJoin = new JoinStructure();
-
-                                        ThisCoors = GetLineCoors(SourceListBox, TargetListBox, SourceIndex, TargetIndex);
-                                        MyLine = new LineControl(
-                                            OLAPPanel,
-                                            ThisCoors.FromX,
-                                            ThisCoors.FromY,
-                                            ThisCoors.ToX,
-                                            ThisCoors.ToY,
-                                            JoinColor,
-                                            MainWindowViewModel.JoinWidth,
-                                            true); // true для направленной линии
-                                        MyLine.ZIndex = 0; // Линия будет ниже
-                                        ThisJoin.Line = MyLine;
-
-                                        ThisJoin.Join_id = reader.GetValue(3).ToString();
-                                        ThisJoin.SourceColumnName = reader.GetString(5);
-                                        ThisJoin.TargetColumnName = reader.GetString(6);
-                                        ThisJoin.Record_id = reader.GetInt32(0);
-
-                                        ThisJoin.SourceIndex = SourceIndex;
-                                        ThisJoin.SourceListBox = SourceListBox;
-                                        ThisJoin.SourcePanel = GetParentPanel(SourceListBox);
-                                        ThisJoin.SourceTableName = reader.GetString(7);
-                                        ThisJoin.TargetIndex = TargetIndex;
-                                        ThisJoin.TargetListBox = TargetListBox;
-                                        ThisJoin.TargetPanel = GetParentPanel(TargetListBox);
-                                        ThisJoin.TargetTableName = reader.GetString(8);
-                                        ThisJoin.ConditionStatement = reader.GetString(4);
-
-                                        MainWindowViewModel.JoinLines.Add(ThisJoin);
-                                    }
+                                    await reader.CloseAsync();
                                 }
-                                await reader.CloseAsync();
                             }
                         }
                     }
-                }
-                else if (MainWindowViewModel.dbms == DBMS.PG)
-                {
-                    using (var dbConnection = new ConnectPG())
+                    else if (MainWindowViewModel.dbms == DBMS.PG)
                     {
-                        // Доступ к соединению
-                        NpgsqlConnection connection = dbConnection.Cnn;
+                        using (var dbConnection = new ConnectPG())
+                        {
+                            // Доступ к соединению
+                            NpgsqlConnection connection = dbConnection.Cnn;
 
-                        string stringCommand = @"SELECT 
+                            string stringCommand = @"SELECT 
                      a.tid, 
                      a.SourceTable_id, 
                      a.TargetTable_id, 
@@ -690,85 +739,87 @@ namespace LEAD_OLAP_DESINGER.Views
                  JOIN ReporterTables AS c ON a.TargetTable_id = c.tid
                  WHERE a.system_id = @system_id AND a.reporterLayer_id = @reporterLayer_id";
 
-                        using (var command = new NpgsqlCommand(stringCommand, connection))
-                        {
-                            // Добавление параметров
-                           
-                            command.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
-                            command.Parameters.AddWithValue("@reporterlayer_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
-
-                            using (var reader = await command.ExecuteReaderAsync())
+                            using (var command = new NpgsqlCommand(stringCommand, connection))
                             {
-                                while (await reader.ReadAsync())
+                                // Добавление параметров
+
+                                command.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
+                                command.Parameters.AddWithValue("@reporterlayer_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
+
+                                using (var reader = await command.ExecuteReaderAsync())
                                 {
-                                    SourceTable_id = reader.GetInt32(1);
-                                    TargetTable_id = reader.GetInt32(2);
-
-                                    // Поиск листбоксов, связанных с исходной и целевой таблицами
-                                    SourceListBox = null;
-                                    TargetListBox = null;
-
-                                    SourceIndex = -1;
-                                    TargetIndex = -1;
-
-                                    for (int i = 0; i < MainWindowViewModel.ProcessingTables.Count; i++)
+                                    while (await reader.ReadAsync())
                                     {
-                                        ThisTable = MainWindowViewModel.ProcessingTables[i];
-                                        if (ThisTable.Table_id == SourceTable_id)
+                                        SourceTable_id = reader.GetInt32(1);
+                                        TargetTable_id = reader.GetInt32(2);
+
+                                        // Поиск листбоксов, связанных с исходной и целевой таблицами
+                                        SourceListBox = null;
+                                        TargetListBox = null;
+
+                                        SourceIndex = -1;
+                                        TargetIndex = -1;
+
+                                        for (int i = 0; i < MainWindowViewModel.ProcessingTables.Count; i++)
                                         {
-                                            SourceListBox = ThisTable.CustomList;
-                                            SourceIndex = SourceListBox.Items.IndexOf(reader.GetValue(5));
+                                            ThisTable = MainWindowViewModel.ProcessingTables[i];
+                                            if (ThisTable.Table_id == SourceTable_id)
+                                            {
+                                                SourceListBox = ThisTable.CustomList;
+                                                SourceIndex = SourceListBox.Items.IndexOf(reader.GetValue(5));
+                                            }
+                                            if (ThisTable.Table_id == TargetTable_id)
+                                            {
+                                                TargetListBox = ThisTable.CustomList;
+                                                TargetIndex = TargetListBox.Items.IndexOf(reader.GetValue(6));
+                                            }
+                                            if (SourceListBox != null && TargetListBox != null)
+                                                break;
                                         }
-                                        if (ThisTable.Table_id == TargetTable_id)
-                                        {
-                                            TargetListBox = ThisTable.CustomList;
-                                            TargetIndex = TargetListBox.Items.IndexOf(reader.GetValue(6));
-                                        }
+
                                         if (SourceListBox != null && TargetListBox != null)
-                                            break;
+                                        {
+
+                                            ThisJoin = new JoinStructure();
+
+                                            ThisCoors = GetLineCoors(SourceListBox, TargetListBox, SourceIndex, TargetIndex);
+                                            MyLine = new LineControl(
+                                                OLAPPanel,
+                                                ThisCoors.FromX,
+                                                ThisCoors.FromY,
+                                                ThisCoors.ToX,
+                                                ThisCoors.ToY,
+                                                JoinColor,
+                                                MainWindowViewModel.JoinWidth,
+                                                true); // true для направленной линии
+                                            MyLine.ZIndex = 0; // Линия будет ниже
+                                            ThisJoin.Line = MyLine;
+
+                                            ThisJoin.Join_id = reader.GetValue(3).ToString();
+                                            ThisJoin.SourceColumnName = reader.GetString(5);
+                                            ThisJoin.TargetColumnName = reader.GetString(6);
+                                            ThisJoin.Record_id = reader.GetInt32(0);
+
+                                            ThisJoin.SourceIndex = SourceIndex;
+                                            ThisJoin.SourceListBox = SourceListBox;
+                                            ThisJoin.SourcePanel = GetParentPanel(SourceListBox);
+                                            ThisJoin.SourceTableName = reader.GetString(7);
+                                            ThisJoin.TargetIndex = TargetIndex;
+                                            ThisJoin.TargetListBox = TargetListBox;
+                                            ThisJoin.TargetPanel = GetParentPanel(TargetListBox);
+                                            ThisJoin.TargetTableName = reader.GetString(8);
+                                            ThisJoin.ConditionStatement = reader.GetString(4);
+
+                                            MainWindowViewModel.JoinLines.Add(ThisJoin);
+
+                                        }
                                     }
-
-                                    if (SourceListBox != null && TargetListBox != null)
-                                    {
-                                        ThisJoin = new JoinStructure();
-
-                                        ThisCoors = GetLineCoors(SourceListBox, TargetListBox, SourceIndex, TargetIndex);
-                                        MyLine = new LineControl(
-                                            OLAPPanel,
-                                            ThisCoors.FromX,
-                                            ThisCoors.FromY,
-                                            ThisCoors.ToX,
-                                            ThisCoors.ToY,
-                                            JoinColor,
-                                            MainWindowViewModel.JoinWidth,
-                                            true); // true для направленной линии
-                                        MyLine.ZIndex = 0; // Линия будет ниже
-                                        ThisJoin.Line = MyLine;
-
-                                        ThisJoin.Join_id = reader.GetValue(3).ToString();
-                                        ThisJoin.SourceColumnName = reader.GetString(5);
-                                        ThisJoin.TargetColumnName = reader.GetString(6);
-                                        ThisJoin.Record_id = reader.GetInt32(0);
-
-                                        ThisJoin.SourceIndex = SourceIndex;
-                                        ThisJoin.SourceListBox = SourceListBox;
-                                        ThisJoin.SourcePanel = GetParentPanel(SourceListBox);
-                                        ThisJoin.SourceTableName = reader.GetString(7);
-                                        ThisJoin.TargetIndex = TargetIndex;
-                                        ThisJoin.TargetListBox = TargetListBox;
-                                        ThisJoin.TargetPanel = GetParentPanel(TargetListBox);
-                                        ThisJoin.TargetTableName = reader.GetString(8);
-                                        ThisJoin.ConditionStatement = reader.GetString(4);
-
-                                        MainWindowViewModel.JoinLines.Add(ThisJoin);
-                                    }
+                                    await reader.CloseAsync();
                                 }
-                                await reader.CloseAsync();
                             }
                         }
                     }
-                }
-
+                });
 
             }
             catch (SqlException sqlEx)
@@ -788,38 +839,40 @@ namespace LEAD_OLAP_DESINGER.Views
         {
             try
             {
-                if (MainWindowViewModel.dbms == DBMS.MS)
+                await Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    using (var dbConnection = new Connect())
+                    if (MainWindowViewModel.dbms == DBMS.MS)
                     {
-                        SqlConnection connection = dbConnection.Cnn;
+                        using (var dbConnection = new Connect())
+                        {
+                            SqlConnection connection = dbConnection.Cnn;
 
-                        // Загрузка классов
-                        string classQuery = @"SELECT tid, ClassName 
+                            // Загрузка классов
+                            string classQuery = @"SELECT tid, ClassName 
                                   FROM ReporterClasses WITH (NOLOCK) 
                                   WHERE System_id = @SystemId AND ReporterLayer_id = @LayerId";
 
-                        using (var classCommand = new SqlCommand(classQuery, connection))
-                        {
-                            classCommand.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
-                            classCommand.Parameters.AddWithValue("@LayerId", MainWindowViewModel.ReporterLayer_id);
-
-                            using (var classReader = await classCommand.ExecuteReaderAsync())
+                            using (var classCommand = new SqlCommand(classQuery, connection))
                             {
-                                while (await classReader.ReadAsync())
+                                classCommand.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
+                                classCommand.Parameters.AddWithValue("@LayerId", MainWindowViewModel.ReporterLayer_id);
+
+                                using (var classReader = await classCommand.ExecuteReaderAsync())
                                 {
-                                    var reporterClass = new ReporterClass
+                                    while (await classReader.ReadAsync())
                                     {
-                                        Class_id = classReader.GetInt32(0),
-                                        ClassName = classReader.GetString(1)
-                                    };
-                                    MainWindowViewModel.ReporterClasses.Add(reporterClass);
+                                        var reporterClass = new ReporterClass
+                                        {
+                                            Class_id = classReader.GetInt32(0),
+                                            ClassName = classReader.GetString(1)
+                                        };
+                                        MainWindowViewModel.ReporterClasses.Add(reporterClass);
+                                    }
                                 }
                             }
-                        }
 
-                        // Загрузка объектов
-                        string objectQuery = @"SELECT a.tid, a.ObjectName, 
+                            // Загрузка объектов
+                            string objectQuery = @"SELECT a.tid, a.ObjectName, 
                                    a.ReporterDimension_id, a.ReporterMeasure_id, 
                                    a.ReporterDetail_id, a.ReporterClass_id, b.ClassName,
                                    ISNULL(a.IsNumeric, 0), a.ObjectDescription
@@ -829,94 +882,94 @@ namespace LEAD_OLAP_DESINGER.Views
                                    WHERE a.System_id = @SystemId 
                                    AND a.ReporterLayer_id = @LayerId";
 
-                        using (var objectCommand = new SqlCommand(objectQuery, connection))
-                        {
-                            objectCommand.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
-                            objectCommand.Parameters.AddWithValue("@LayerId", MainWindowViewModel.ReporterLayer_id);
-
-                            using (var objectReader = await objectCommand.ExecuteReaderAsync())
+                            using (var objectCommand = new SqlCommand(objectQuery, connection))
                             {
-                              
-                                while (await objectReader.ReadAsync())
+                                objectCommand.Parameters.AddWithValue("@SystemId", MainWindowViewModel.System_id);
+                                objectCommand.Parameters.AddWithValue("@LayerId", MainWindowViewModel.ReporterLayer_id);
+
+                                using (var objectReader = await objectCommand.ExecuteReaderAsync())
                                 {
-                                    var reporterObject = new ReporterObject
+
+                                    while (await objectReader.ReadAsync())
                                     {
-                                        Object_id = objectReader.GetInt32(0),
-                                        ObjectName = objectReader.GetString(1),
-                                        ReporterDimension_id = objectReader.IsDBNull(2) ? -1 : objectReader.GetInt32(2),
-                                        ReporterMeasure_id = objectReader.IsDBNull(3) ? -1 : objectReader.GetInt32(3),
-                                        ReporterDetail_id = objectReader.IsDBNull(4) ? -1 : objectReader.GetInt32(4),
-                                        ReporterClass_id = objectReader.GetInt32(5),
-                                        ClassName = objectReader.GetString(6),
-                                        IsNumeric = objectReader.GetInt32(7) == 1,
-                                        ObjectDescription = objectReader.GetString(8),
-                                    };
+                                        var reporterObject = new ReporterObject
+                                        {
+                                            Object_id = objectReader.GetInt32(0),
+                                            ObjectName = objectReader.GetString(1),
+                                            ReporterDimension_id = objectReader.IsDBNull(2) ? -1 : objectReader.GetInt32(2),
+                                            ReporterMeasure_id = objectReader.IsDBNull(3) ? -1 : objectReader.GetInt32(3),
+                                            ReporterDetail_id = objectReader.IsDBNull(4) ? -1 : objectReader.GetInt32(4),
+                                            ReporterClass_id = objectReader.GetInt32(5),
+                                            ClassName = objectReader.GetString(6),
+                                            IsNumeric = objectReader.GetInt32(7) == 1,
+                                            ObjectDescription = objectReader.GetString(8),
+                                        };
 
-                                    reporterObject.ObjectType = reporterObject.ReporterDimension_id > -1 ? "Измерение" :
-                                                                reporterObject.ReporterMeasure_id > -1 ? "Мера" :
-                                                                "Деталь";
+                                        reporterObject.ObjectType = reporterObject.ReporterDimension_id > -1 ? "Измерение" :
+                                                                    reporterObject.ReporterMeasure_id > -1 ? "Мера" :
+                                                                    "Деталь";
 
-                                    // Добавление объекта в коллекцию
-                                  
-                                   MainWindowViewModel.ObjectList.Add(reporterObject);
+                                        // Добавление объекта в коллекцию
+
+                                        MainWindowViewModel.ObjectList.Add(reporterObject);
+                                    }
+                                    MainWindowViewModel m = new MainWindowViewModel();
+
+                                    m.League = m.GroupObjectsByClassName(MainWindowViewModel.ObjectList);
+
+                                    var header = new HeaderNode();
+
+                                    // Добавляем заголовок в список
+
+                                    m.League.Insert(0, header);
+
+                                    treeObj.ItemsSource = m.League;
                                 }
-                                MainWindowViewModel m = new MainWindowViewModel();
-                               
-                                m.League = m.GroupObjectsByClassName(MainWindowViewModel.ObjectList);
 
-                                var header = new HeaderNode();
-
-                                // Добавляем заголовок в список
-
-                                m.League.Insert(0, header);
-
-                                treeObj.ItemsSource = m.League;
                             }
 
-                        }
+                            if (MainWindowViewModel.ObjectList.Count > 0)
+                            {
 
-                        if (MainWindowViewModel.ObjectList.Count > 0)
-                        {
-                          
-                            gridObj.ItemsSource = MainWindowViewModel.ObjectList;
-                           
+                                gridObj.ItemsSource = MainWindowViewModel.ObjectList;
+
+                            }
                         }
                     }
-                }
-                else if (MainWindowViewModel.dbms == DBMS.PG)
-                {
-                    using (var dbConnection = new ConnectPG())
+                    else if (MainWindowViewModel.dbms == DBMS.PG)
                     {
-                        // Доступ к соединению
-                        NpgsqlConnection connection = dbConnection.Cnn;
+                        using (var dbConnection = new ConnectPG())
+                        {
+                            // Доступ к соединению
+                            NpgsqlConnection connection = dbConnection.Cnn;
 
-                        // Загрузка классов
-                        string classQuery = @"SELECT tid, ClassName 
+                            // Загрузка классов
+                            string classQuery = @"SELECT tid, ClassName 
                           FROM ReporterClasses
                           WHERE system_id = @system_id AND reporterLayer_id = @LayerId";
 
-                        using (var classCommand = new NpgsqlCommand(classQuery, connection))
-                        {
-                            classCommand.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
-                            classCommand.Parameters.AddWithValue("@LayerId", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
-                           
-
-                            using (var classReader = await classCommand.ExecuteReaderAsync())
+                            using (var classCommand = new NpgsqlCommand(classQuery, connection))
                             {
-                                while (await classReader.ReadAsync())
+                                classCommand.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
+                                classCommand.Parameters.AddWithValue("@LayerId", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
+
+
+                                using (var classReader = await classCommand.ExecuteReaderAsync())
                                 {
-                                    var reporterClass = new ReporterClass
+                                    while (await classReader.ReadAsync())
                                     {
-                                        Class_id = classReader.GetInt32(0),
-                                        ClassName = classReader.GetString(1)
-                                    };
-                                    MainWindowViewModel.ReporterClasses.Add(reporterClass);
+                                        var reporterClass = new ReporterClass
+                                        {
+                                            Class_id = classReader.GetInt32(0),
+                                            ClassName = classReader.GetString(1)
+                                        };
+                                        MainWindowViewModel.ReporterClasses.Add(reporterClass);
+                                    }
                                 }
                             }
-                        }
 
-                        // Загрузка объектов
-                        string objectQuery = @"SELECT a.tid, a.ObjectName, 
+                            // Загрузка объектов
+                            string objectQuery = @"SELECT a.tid, a.ObjectName, 
                           a.ReporterDimension_id, a.ReporterMeasure_id, 
                           a.ReporterDetail_id, a.ReporterClass_id, b.ClassName,
                           COALESCE(a.IsNumeric, 0), a.ObjectDescription 
@@ -925,54 +978,55 @@ namespace LEAD_OLAP_DESINGER.Views
                           WHERE a.system_id = @system_id 
                           AND a.reporterLayer_id = @LayerId";
 
-                        using (var objectCommand = new NpgsqlCommand(objectQuery, connection))
-                        {
-
-                            objectCommand.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
-                            objectCommand.Parameters.AddWithValue("@LayerId", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
-                          
-                            using (var objectReader = await objectCommand.ExecuteReaderAsync())
+                            using (var objectCommand = new NpgsqlCommand(objectQuery, connection))
                             {
-                                while (await objectReader.ReadAsync())
+
+                                objectCommand.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
+                                objectCommand.Parameters.AddWithValue("@LayerId", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
+
+                                using (var objectReader = await objectCommand.ExecuteReaderAsync())
                                 {
-                                    var reporterObject = new ReporterObject
+                                    while (await objectReader.ReadAsync())
                                     {
-                                        Object_id = objectReader.GetInt32(0),
-                                        ObjectName = objectReader.GetString(1),
-                                        ReporterDimension_id = objectReader.IsDBNull(2) ? -1 : objectReader.GetInt32(2),
-                                        ReporterMeasure_id = objectReader.IsDBNull(3) ? -1 : objectReader.GetInt32(3),
-                                        ReporterDetail_id = objectReader.IsDBNull(4) ? -1 : objectReader.GetInt32(4),
-                                        ReporterClass_id = objectReader.GetInt32(5),
-                                        ClassName = objectReader.GetString(6),
-                                        IsNumeric = objectReader.GetInt32(7) == 1,
-                                        ObjectDescription = objectReader.GetString(8),
-                                    };
+                                        var reporterObject = new ReporterObject
+                                        {
+                                            Object_id = objectReader.GetInt32(0),
+                                            ObjectName = objectReader.GetString(1),
+                                            ReporterDimension_id = objectReader.IsDBNull(2) ? -1 : objectReader.GetInt32(2),
+                                            ReporterMeasure_id = objectReader.IsDBNull(3) ? -1 : objectReader.GetInt32(3),
+                                            ReporterDetail_id = objectReader.IsDBNull(4) ? -1 : objectReader.GetInt32(4),
+                                            ReporterClass_id = objectReader.GetInt32(5),
+                                            ClassName = objectReader.GetString(6),
+                                            IsNumeric = objectReader.GetInt32(7) == 1,
+                                            ObjectDescription = objectReader.GetString(8),
+                                        };
 
-                                    reporterObject.ObjectType = reporterObject.ReporterDimension_id > -1 ? "Измерение" :
-                                                                reporterObject.ReporterMeasure_id > -1 ? "Мера" :
-                                                                "Деталь";
+                                        reporterObject.ObjectType = reporterObject.ReporterDimension_id > -1 ? "Измерение" :
+                                                                    reporterObject.ReporterMeasure_id > -1 ? "Мера" :
+                                                                    "Деталь";
 
-                                    MainWindowViewModel.ObjectList.Add(reporterObject);
+                                        MainWindowViewModel.ObjectList.Add(reporterObject);
+                                    }
+                                    MainWindowViewModel m = new MainWindowViewModel();
+
+
+                                    m.League = m.GroupObjectsByClassName(MainWindowViewModel.ObjectList);
+
+                                    var header = new HeaderNode();
+
+                                    m.League.Insert(0, header);
+
+                                    treeObj.ItemsSource = m.League;
                                 }
-                                MainWindowViewModel m = new MainWindowViewModel();
-                               
-                              
-                                m.League = m.GroupObjectsByClassName(MainWindowViewModel.ObjectList);
+                            }
 
-                                var header = new HeaderNode();
-
-                                m.League.Insert(0, header);
-
-                                treeObj.ItemsSource = m.League;
+                            if (MainWindowViewModel.ObjectList.Count > 0)
+                            {
+                                gridObj.ItemsSource = MainWindowViewModel.ObjectList;
                             }
                         }
-
-                        if (MainWindowViewModel.ObjectList.Count > 0)
-                        {
-                            gridObj.ItemsSource = MainWindowViewModel.ObjectList;
-                        }
                     }
-                }
+                });
                     
             }
             catch (SqlException sqlEx)
@@ -984,13 +1038,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 MessageDialog.Show("General Error", $"Ошибка: {ex.Message}");
             }
         }
-        private void HeaderGrid_SizeChanged(object? sender, SizeChangedEventArgs e)
-        {
-            if (DataContext is MainWindowViewModel vm)
-            {
-               vm.UpdateColumnWidths(e.NewSize.Width);
-            }
-        }
+      
 
         /// <summary>
         /// Загрузка таблиц
@@ -999,82 +1047,90 @@ namespace LEAD_OLAP_DESINGER.Views
         {
             try
             {
-                if (MainWindowViewModel.dbms == DBMS.MS)
+                await Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    string query = @"SELECT tid, TableName, TableAlias, X, Y 
-                         FROM ReporterTables WITH (NOLOCK)
-                         WHERE System_id = @system_id AND ReporterLayer_id = @reporter_layer_id";
-
-                    using (var dbConnect = new Connect())
-                    using (var command = new SqlCommand(query, dbConnect.Cnn))
+                    if (MainWindowViewModel.dbms == DBMS.MS)
                     {
-                        command.Parameters.AddWithValue("@system_id", MainWindowViewModel.System_id);
-                        command.Parameters.AddWithValue("@reporter_layer_id", MainWindowViewModel.ReporterLayer_id);
+                        string query = @"SELECT tid, TableName, TableAlias, X, Y 
+                             FROM ReporterTables WITH (NOLOCK)
+                             WHERE System_id = @system_id AND ReporterLayer_id = @reporter_layer_id";
 
-                        using (var reader = await command.ExecuteReaderAsync())
+                        using (var dbConnect = new Connect())
+                        using (var command = new SqlCommand(query, dbConnect.Cnn))
                         {
-                            while (await reader.ReadAsync())
-                            {
-                                var table = new TablesList
-                                {
-                                    Table_id = reader.GetInt32(0),
-                                    TableName = reader.GetString(1),
-                                    TableAlias = reader.GetString(2),
-                                    X = reader.IsDBNull(3) ? 10 : reader.GetInt32(3),
-                                    Y = reader.IsDBNull(4) ? 10 : reader.GetInt32(4)
-                                };
+                            command.Parameters.AddWithValue("@system_id", MainWindowViewModel.System_id);
+                            command.Parameters.AddWithValue("@reporter_layer_id", MainWindowViewModel.ReporterLayer_id);
 
-                                MainWindowViewModel.ProcessingTables.Add(table);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                while (await reader.ReadAsync())
+                                {
+                                    var table = new TablesList
+                                    {
+                                        Table_id = reader.GetInt32(0),
+                                        TableName = reader.GetString(1),
+                                        TableAlias = reader.GetString(2),
+                                        X = reader.IsDBNull(3) ? 10 : reader.GetInt32(3),
+                                        Y = reader.IsDBNull(4) ? 10 : reader.GetInt32(4)
+                                    };
+
+                                    MainWindowViewModel.ProcessingTables.Add(table);
+                                }
                             }
                         }
                     }
-                }
-                else if (MainWindowViewModel.dbms == DBMS.PG)
-                {
-                    string query = @"SELECT tid, TableName, TableAlias, X, Y 
-                         FROM ReporterTables 
-                         WHERE System_id = @system_id AND ReporterLayer_id = @reporter_layer_id";
-
-                    using (var dbConnect = new ConnectPG())  // Используем ваш Connect класс с Npgsql
-                    using (var command = new NpgsqlCommand(query, dbConnect.Cnn))  // Используем NpgsqlCommand
+                    else if (MainWindowViewModel.dbms == DBMS.PG)
                     {
-                        command.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
-                        command.Parameters.AddWithValue("@reporter_layer_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
+                        string query = @"SELECT tid, TableName, TableAlias, X, Y 
+                             FROM ReporterTables 
+                             WHERE System_id = @system_id AND ReporterLayer_id = @reporter_layer_id";
 
-                        using (var reader = await command.ExecuteReaderAsync())  // Асинхронное выполнение запроса
+                        using (var dbConnect = new ConnectPG())  // Используем ваш Connect класс с Npgsql
+                        using (var command = new NpgsqlCommand(query, dbConnect.Cnn))  // Используем NpgsqlCommand
                         {
-                            while (await reader.ReadAsync())
-                            {
-                                var table = new TablesList
-                                {
-                                    Table_id = reader.GetInt32(0),
-                                    TableName = reader.GetString(1),
-                                    TableAlias = reader.GetString(2),
-                                    X = reader.IsDBNull(3) ? 10 : reader.GetInt32(3),
-                                    Y = reader.IsDBNull(4) ? 10 : reader.GetInt32(4)
-                                };
+                            command.Parameters.AddWithValue("@system_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.System_id));
+                            command.Parameters.AddWithValue("@reporter_layer_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(MainWindowViewModel.ReporterLayer_id));
 
-                                MainWindowViewModel.ProcessingTables.Add(table);
+                            using (var reader = await command.ExecuteReaderAsync())  // Асинхронное выполнение запроса
+                            {
+                                while (await reader.ReadAsync())
+                                {
+                                    var table = new TablesList
+                                    {
+                                        Table_id = reader.GetInt32(0),
+                                        TableName = reader.GetString(1),
+                                        TableAlias = reader.GetString(2),
+                                        X = reader.IsDBNull(3) ? 10 : reader.GetInt32(3),
+                                        Y = reader.IsDBNull(4) ? 10 : reader.GetInt32(4)
+                                    };
+
+                                    MainWindowViewModel.ProcessingTables.Add(table);
+                                }
                             }
                         }
                     }
-                }
 
                 // Создание панелей для каждой таблицы
-                foreach (var table in MainWindowViewModel.ProcessingTables)
-                {
-                    var customPanel = CreateCustomPanel(
-                        table.TableAlias,
-                        OLAPPanel,
-                        table.TableName,
-                        table.X,
-                        table.Y,
-                        table.Table_id);
+               
+                    foreach (var table in MainWindowViewModel.ProcessingTables)
+                    {
+                        var customPanel = CreateCustomPanel(
+                            table.TableAlias,
+                            OLAPPanel,
+                            table.TableName,
+                            table.X,
+                            table.Y,
+                            table.Table_id);
 
-                    table.CustomPanel = customPanel.ThisPanel;
-                    table.CustomList = customPanel.ThisListBox;
-                    customPanel.ThisPanel.ZIndex = 1; // Панель будет выше
-                }
+                        table.CustomPanel = customPanel.ThisPanel;
+                        table.CustomList = customPanel.ThisListBox;
+
+                        if (customPanel.ThisPanel != null)
+                        {
+                            customPanel.ThisPanel.ZIndex = 1; // Панель будет выше
+                        }
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -1297,7 +1353,7 @@ namespace LEAD_OLAP_DESINGER.Views
                 Text = panelName + "\n" + "(" + tableName + ")",
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                FontFamily = new FontFamily("Consolas"),
+                FontFamily = new FontFamily("Segoe UI"),
                 FontWeight = FontWeight.ExtraBlack,
                 FontSize = 11,
                 Foreground = new SolidColorBrush(textColor) // Apply text color
@@ -1334,7 +1390,7 @@ namespace LEAD_OLAP_DESINGER.Views
                     Content = item,
                     Padding = new Thickness(0),
                     Tag = "DRAGDROP_ELEMENT",
-                    FontFamily = new FontFamily("Consolas"),
+                    FontFamily = new FontFamily("Segoe UI"),
                     FontSize = 11,
                     Foreground = new SolidColorBrush(itemTextColor),
                 };
@@ -1442,64 +1498,6 @@ namespace LEAD_OLAP_DESINGER.Views
                 ThisPanel = thisPanel,
                 ThisListBox = newBox
             };
-        }
-
-      
-        private bool _isResizing = false;
-        private double _lastMouseY;
-
-        private void GridSplitter_DragDelta(object? sender, PointerEventArgs e)
-        {
-            //if (sender is GridSplitter splitter)
-            //{
-            //    var parentGrid = splitter.Parent as Grid;
-            //    if (parentGrid == null) return;
-
-            //    int columnIndex = Grid.GetColumn(splitter);
-
-            //    var delta = e.GetPosition(parentGrid).X - splitter.Bounds.Left;
-
-            //    //if (columnIndex == 1) // Первый сплиттер
-            //    //{
-            //    //    if (MainWindowViewModel.Column1Width.GridUnitType == GridUnitType.Star)
-            //    //    {
-            //    //        MainWindowViewModel.Column1Width = new GridLength(MainWindowViewModel.Column1Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
-            //    //    }
-
-            //    //    MainWindowViewModel.Column1Width = new GridLength(Math.Max(0, MainWindowViewModel.Column1Width.Value + (e.Vector.Length-e.Vector.X)), GridUnitType.Pixel);
-
-            //    //}
-            //    //else if (columnIndex == 3) // Второй сплиттер
-            //    //{
-            //    //    if (MainWindowViewModel.Column2Width.GridUnitType == GridUnitType.Star)
-            //    //    {
-            //    //        MainWindowViewModel.Column2Width = new GridLength(MainWindowViewModel.Column2Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
-            //    //    }
-
-            //    //    MainWindowViewModel.Column2Width = new GridLength(Math.Max(0, MainWindowViewModel.Column2Width.Value + (e.Vector.Length - e.Vector.X)), GridUnitType.Pixel);
-            //    //}
-            //    if (columnIndex == 1) // Первый сплиттер
-            //    {
-            //        // Если колонка в Grid используется с единицами GridUnitType.Star, преобразуем в пиксели
-            //        if (MainWindowViewModel.Column1Width.GridUnitType == GridUnitType.Star)
-            //        {
-            //            MainWindowViewModel.Column1Width = new GridLength(MainWindowViewModel.Column1Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
-            //        }
-
-            //        // Обновляем ширину колонки в зависимости от движения сплиттера
-            //        MainWindowViewModel.Column1Width = new GridLength(Math.Max(0, MainWindowViewModel.Column1Width.Value + delta), GridUnitType.Pixel);
-            //    }
-            //    else if (columnIndex == 3) // Второй сплиттер
-            //    {
-            //        if (MainWindowViewModel.Column2Width.GridUnitType == GridUnitType.Star)
-            //        {
-            //            MainWindowViewModel.Column2Width = new GridLength(MainWindowViewModel.Column2Width.Value * parentGrid.Bounds.Width, GridUnitType.Pixel);
-            //        }
-
-            //        // Обновляем ширину второй колонки
-            //        MainWindowViewModel.Column2Width = new GridLength(Math.Max(0, MainWindowViewModel.Column2Width.Value + delta), GridUnitType.Pixel);
-            //    }
-            //}
         }
 
 
@@ -4211,6 +4209,8 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
 
             // Разблокировка главного окна
             this.IsEnabled = true;
+
+            UpdateComboBox();
         }
 
         /// <summary>
@@ -4265,6 +4265,62 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
             }
 
 
+        }
+
+
+        private double? _splitter1StartX;
+        private double? _splitter2StartX;
+
+        // Обработчик для начала перетаскивания первого разделителя
+        private void Splitter1_Pressed(object sender, PointerPressedEventArgs e)
+        {
+            _splitter1StartX = e.GetPosition(this).X;
+        }
+
+        // Обработчик для завершения перетаскивания первого разделителя
+        private void Splitter1_Released(object sender, PointerReleasedEventArgs e)
+        {
+            _splitter1StartX = null;
+        }
+
+        // Обработчик для перемещения первого разделителя
+        private void Splitter1_Moved(object sender, PointerEventArgs e)
+        {
+            if (_splitter1StartX.HasValue)
+            {
+                var currentX = e.GetPosition(this).X;
+                var delta = currentX - _splitter1StartX.Value;
+
+                // Изменяем ширину первой колонки
+
+                MainWindowViewModel.Column1Width += delta;
+                _splitter1StartX = currentX; // Обновляем начальную позицию
+            }
+        }
+
+        // Аналогично для второго разделителя
+        private void Splitter2_Pressed(object sender, PointerPressedEventArgs e)
+        {
+            _splitter2StartX = e.GetPosition(this).X;
+        }
+
+        private void Splitter2_Released(object sender, PointerReleasedEventArgs e)
+        {
+            _splitter2StartX = null;
+        }
+
+        private void Splitter2_Moved(object sender, PointerEventArgs e)
+        {
+            if (_splitter2StartX.HasValue)
+            {
+                var currentX = e.GetPosition(this).X;
+                var delta = currentX - _splitter2StartX.Value;
+
+                // Изменяем ширину третьей колонки
+
+                MainWindowViewModel.Column3Width += delta;
+                _splitter2StartX = currentX; // Обновляем начальную позицию
+            }
         }
 
     }

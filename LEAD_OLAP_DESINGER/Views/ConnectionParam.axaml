@@ -8,7 +8,6 @@
         x:DataType="vm:MainWindowViewModel"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        FontSize="12" 
         WindowStartupLocation="CenterScreen">
 
   <Grid>
