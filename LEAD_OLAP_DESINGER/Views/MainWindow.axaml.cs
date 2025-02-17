@@ -3798,6 +3798,9 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
                         // Установка имени объекта
                         myForm.FindControl<TextBox>("ObjectName").Text = selectedObject.ObjectName;
 
+                        // Установка Алиес объекта
+                        myForm.FindControl<TextBox>("Description").Text = selectedObject.ObjectDescription;
+
                         // Установка текста выборки
                         myForm.FindControl<TextBox>("SelectStatement").Text = SelectStatement;
 
