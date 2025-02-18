@@ -71,7 +71,7 @@ namespace LEAD_OLAP_DESINGER.Views
         private ToolTip? BackObjectTip;
 
         private ReporterObject selectedObject;
-        public DataGrid? gridObj;
+      
         public Panel? visiblePanel;
 
         private ComboBox? layerComboBox;
@@ -92,11 +92,7 @@ namespace LEAD_OLAP_DESINGER.Views
         {
             InitializeComponent();
 
-           
-
             OnInitialized();
-
-            gridObj = this.FindControl<DataGrid>("gridObjects");
 
             NameScope.SetNameScope(OLAPPanel, new NameScope());
 
@@ -928,12 +924,10 @@ namespace LEAD_OLAP_DESINGER.Views
 
                             }
 
-                            if (MainWindowViewModel.ObjectList.Count > 0)
-                            {
-
-                                gridObj.ItemsSource = MainWindowViewModel.ObjectList;
-
-                            }
+                            //if (MainWindowViewModel.ObjectList.Count > 0)
+                            //{
+                            //    treeObj.ItemsSource = MainWindowViewModel.ObjectList;
+                            //}
                         }
                     }
                     else if (MainWindowViewModel.dbms == DBMS.PG)
@@ -1020,10 +1014,10 @@ namespace LEAD_OLAP_DESINGER.Views
                                 }
                             }
 
-                            if (MainWindowViewModel.ObjectList.Count > 0)
-                            {
-                                gridObj.ItemsSource = MainWindowViewModel.ObjectList;
-                            }
+                            //if (MainWindowViewModel.ObjectList.Count > 0)
+                            //{
+                            //    treeObj.ItemsSource = MainWindowViewModel.ObjectList;
+                            //}
                         }
                     }
                 });
@@ -3402,12 +3396,6 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            if (gridObj.SelectedItem is ReporterObject selectedItem)
-            {
-                // Обработать выбранный элемент
-                selectedObject =  selectedItem;
-            }
-
             if (treeObj.SelectedItem is HeaderNode || treeObj.SelectedItem is ReporterNode)
             {
                 treeObj.SelectedItem = null; // Сбрасываем выделение
@@ -4180,7 +4168,6 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
         /// </summary>
         public void DropData_Objects()
         {
-            gridObjects.ItemsSource = null;
             treeObj.ItemsSource = null;
             DataListBox.Items.Clear();
          
@@ -4271,58 +4258,92 @@ VALUES (@System_id, @ObjectName, @ObjectDescription, @ReporterDimension_id, @Rep
         }
 
 
-        private double? _splitter1StartX;
-        private double? _splitter2StartX;
+        private ColumnDefinition _resizingColumn;
+        private double _startX;
 
-        // Обработчик для начала перетаскивания первого разделителя
-        private void Splitter1_Pressed(object sender, PointerPressedEventArgs e)
+        // Начало перетаскивания разделителя
+        private void Splitter_Pressed(object sender, PointerPressedEventArgs e)
         {
-            _splitter1StartX = e.GetPosition(this).X;
+            var rectangle = (Avalonia.Controls.Shapes.Rectangle)sender;
+
+            // Получаем родительский Grid через VisualTreeHelper
+            var grid = rectangle.FindAncestorOfType<Grid>();
+
+            if (grid == null)
+                return;
+
+            // Определяем, какой столбец изменять
+            int columnIndex = Grid.GetColumn(rectangle);
+            _resizingColumn = grid.ColumnDefinitions[columnIndex - 1]; // Столбец слева от разделителя
+
+            // Сохраняем начальную позицию мыши
+            _startX = e.GetPosition(grid).X;
         }
 
-        // Обработчик для завершения перетаскивания первого разделителя
-        private void Splitter1_Released(object sender, PointerReleasedEventArgs e)
+        // Перетаскивание разделителя
+        private void Splitter_Moved(object sender, PointerEventArgs e)
         {
-            _splitter1StartX = null;
-        }
-
-        // Обработчик для перемещения первого разделителя
-        private void Splitter1_Moved(object sender, PointerEventArgs e)
-        {
-            if (_splitter1StartX.HasValue)
+            if (_resizingColumn != null)
             {
-                var currentX = e.GetPosition(this).X;
-                var delta = currentX - _splitter1StartX.Value;
+                // Получаем родительский Grid через Rectangle
+                var rectangle = (Avalonia.Controls.Shapes.Rectangle)sender;
+                var grid = rectangle.FindAncestorOfType<Grid>();
 
-                // Изменяем ширину первой колонки
+                if (grid == null)
+                    return;
 
-                MainWindowViewModel.Column1Width += delta;
-                _splitter1StartX = currentX; // Обновляем начальную позицию
+                // Текущая позиция мыши
+                var currentX = e.GetPosition(grid).X;
+
+                // Вычисляем изменение ширины
+                var deltaX = currentX - _startX;
+
+                // Ограничиваем минимальную ширину колонки
+                double newWidth = _resizingColumn.ActualWidth + deltaX;
+                if (newWidth < 50) // Минимальная ширина 50
+                    newWidth = 50;
+
+                // Обновляем ширину колонки
+                _resizingColumn.Width = new GridLength(newWidth, GridUnitType.Pixel);
+
+                // Обновляем начальную позицию для следующего шага
+                _startX = currentX;
+
+                //// Включаем обновление макета
+                //treeObj.IsVisible = true;
+
+                // Синхронизируем ширину для всех элементов
+                SynchronizeColumnWidths();
             }
         }
 
-        // Аналогично для второго разделителя
-        private void Splitter2_Pressed(object sender, PointerPressedEventArgs e)
+        // Завершение перетаскивания разделителя
+        private void Splitter_Released(object sender, PointerReleasedEventArgs e)
         {
-            _splitter2StartX = e.GetPosition(this).X;
+            _resizingColumn = null;
         }
 
-        private void Splitter2_Released(object sender, PointerReleasedEventArgs e)
+        private void SynchronizeColumnWidths()
         {
-            _splitter2StartX = null;
-        }
+            // Получаем родительский Grid
+            var grid = treeObj.FindAncestorOfType<Grid>();
+            if (grid == null)
+                return;
 
-        private void Splitter2_Moved(object sender, PointerEventArgs e)
-        {
-            if (_splitter2StartX.HasValue)
+            // Синхронизируем ширину колонок для всех элементов TreeView
+            foreach (var column in grid.ColumnDefinitions)
             {
-                var currentX = e.GetPosition(this).X;
-                var delta = currentX - _splitter2StartX.Value;
-
-                // Изменяем ширину третьей колонки
-
-                MainWindowViewModel.Column3Width += delta;
-                _splitter2StartX = currentX; // Обновляем начальную позицию
+                foreach (var item in treeObj.Items)
+                {
+                    if (item is Control control)
+                    {
+                        var childGrid = control.FindDescendantOfType<Grid>();
+                        if (childGrid != null && childGrid.ColumnDefinitions.Count > grid.ColumnDefinitions.IndexOf(column))
+                        {
+                            childGrid.ColumnDefinitions[grid.ColumnDefinitions.IndexOf(column)].Width = column.Width;
+                        }
+                    }
+                }
             }
         }
 

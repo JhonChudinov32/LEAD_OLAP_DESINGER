@@ -23,13 +23,13 @@
     </Design.DataContext>
   <Window.Resources>
     <l:ColumnWidthConverter x:Key="ColumnWidthConverter"/>
-    <l:ColumnWidthConverter2 x:Key="ColumnWidthConverter2"/>
-  
-    <ColumnDefinition x:Key="Column1" Width="*"/>
-    <ColumnDefinition x:Key="Column2" Width="Auto"/>
-    <ColumnDefinition x:Key="Column3" Width="*"/>
-    <ColumnDefinition x:Key="Column4" Width="Auto"/>
-    <ColumnDefinition x:Key="Column5" Width="*"/>
+    
+    <ColumnDefinition x:Key="Column1" Width="120" MinWidth="50"/>
+    <ColumnDefinition x:Key="Column2" Width="1"/>
+    <ColumnDefinition x:Key="Column3" Width="120" MinWidth="50"/>
+    <ColumnDefinition x:Key="Column4" Width="1"/>
+    <ColumnDefinition x:Key="Column5" Width="3440" MinWidth="50"/>
+    <ColumnDefinition x:Key="Column6" Width="1"/>
 
   </Window.Resources>
 
@@ -214,54 +214,14 @@
                   
                   <StackPanel Orientation="Vertical" Grid.Row="1">
                   <!-- Список объектов -->
-                    <DataGrid IsVisible="False" x:Name="gridObjects"
-                            Grid.Row="1"
-                            ItemsSource="{Binding ObjectList}"
-                            AutoGenerateColumns="False"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            Margin="1"
-                            RowDetailsVisibilityMode="VisibleWhenSelected"
-                            SelectionChanged="DataGrid_SelectionChanged">
-                   
-                    <DataGrid.Columns>
-                      <DataGridTextColumn Header="Название объекта" Binding="{Binding ObjectName}" />
-                      <DataGridTextColumn Header="Тип объекта" Binding="{Binding ObjectType}" />
-                      <DataGridTextColumn Header="Название класса" Binding="{Binding ClassName}" />
-                    </DataGrid.Columns>
-                  </DataGrid>
                     <Grid>
-                      <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*" /> 
-                      </Grid.RowDefinitions>
-
-                      <!--<Grid Focusable="False" Margin="45,0,5,0" IsVisible="False">
-                        <Grid.ColumnDefinitions>
-                          <StaticResource ResourceKey="Column1"/>
-                          <StaticResource ResourceKey="Column2"/>
-                          <StaticResource ResourceKey="Column3"/>
-                          <StaticResource ResourceKey="Column4"/>
-                          <StaticResource ResourceKey="Column5"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
-                          <TextBlock Text="OLAP объект" FontSize="12" Padding="5" Margin="15,0,10,0"/>
-                        </Border>
-                        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast"  ResizeDirection="Columns"/>
-                        <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
-                          <TextBlock Text="Наименование" FontSize="12" Padding="5" Margin="15,0,10,0"/>
-                        </Border>
-                        <GridSplitter Grid.Column="3"  HorizontalAlignment="Stretch" DragIncrement="10" PointerMoved="GridSplitter_DragDelta" Cursor="SizeWestEast" ResizeDirection="Columns"/>
-                        <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
-                          <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
-                        </Border>
-                      </Grid>-->
+                      <!-- Данные -->
+                      <ScrollViewer  VerticalScrollBarVisibility="Auto">
                       <TreeView Name="treeObj" ItemsSource="{Binding League}" SelectionChanged="DataGrid_SelectionChanged" PointerMoved="TreeObj_PointerMoved"
-                       Margin="5,0,5,5" Grid.Row="1" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}" >
+                       Margin="5,0,5,5" MinWidth="300"  Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=StackPanel}}">
                         <TreeView.DataTemplates>
                           <!-- Корневой узел с заголовками (отображается один раз в TreeView) -->
-                          <TreeDataTemplate DataType="{x:Type local:HeaderNode}" ItemsSource="{Binding Children}">
+                          <TreeDataTemplate DataType="{x:Type local:HeaderNode}" ItemsSource="{Binding Children}" >
                             <Grid Focusable="False">
                               <Grid.ColumnDefinitions>
                                 <StaticResource ResourceKey="Column1"/>
@@ -269,6 +229,7 @@
                                 <StaticResource ResourceKey="Column3"/>
                                 <StaticResource ResourceKey="Column4"/>
                                 <StaticResource ResourceKey="Column5"/>
+                                <StaticResource ResourceKey="Column6"/>
                               </Grid.ColumnDefinitions>
 
                               <!-- Колонка 1 -->
@@ -277,7 +238,7 @@
                               </Border>
 
                               <!-- Разделитель между колонками 1 и 3 -->
-                              <Rectangle Grid.Column="1" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter1_Pressed" PointerReleased="Splitter1_Released" PointerMoved="Splitter1_Moved"/>
+                              <Rectangle Grid.Column="1" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter_Pressed" PointerReleased="Splitter_Released" PointerMoved="Splitter_Moved"/>
 
                               <!-- Колонка 3 -->
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
@@ -285,12 +246,15 @@
                               </Border>
 
                               <!-- Разделитель между колонками 3 и 5 -->
-                              <Rectangle Grid.Column="3" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter2_Pressed" PointerReleased="Splitter2_Released" PointerMoved="Splitter2_Moved"/>
+                              <Rectangle Grid.Column="3" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter_Pressed" PointerReleased="Splitter_Released" PointerMoved="Splitter_Moved"/>
 
                               <!-- Колонка 5 -->
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" Background="{DynamicResource PrimaryColor}" IsHitTestVisible="False" Focusable="False">
                                 <TextBlock Text="Тип" FontSize="12" Padding="5" Margin="15,0,10,0"/>
                               </Border>
+
+                              <!-- Разделитель между колонками 3 и 5 -->
+                              <Rectangle Grid.Column="5" Fill="LightGray" Width="1" Cursor="SizeWestEast" PointerPressed="Splitter_Pressed" PointerReleased="Splitter_Released" PointerMoved="Splitter_Moved"/>
                             </Grid>
                           </TreeDataTemplate>
                           
@@ -308,17 +272,16 @@
                                 <StaticResource ResourceKey="Column3"/>
                                 <StaticResource ResourceKey="Column4"/>
                                 <StaticResource ResourceKey="Column5"/>
+                                <StaticResource ResourceKey="Column6"/>
                               </Grid.ColumnDefinitions>
                               <!-- Колонка 1 -->
                               <Border Grid.Column="0" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
                                 <TextBlock Text="{Binding ObjectName}" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
-
                               <!-- Колонка 3 -->
                               <Border Grid.Column="2" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
                                 <TextBlock Text="{Binding ObjectDescription}" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
                               </Border>
-
                               <!-- Колонка 5 -->
                               <Border Grid.Column="4" BorderThickness="1" Padding="0" HorizontalAlignment="Stretch">
                                 <TextBlock Text="{Binding ObjectType}" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,10,0"/>
@@ -328,7 +291,7 @@
                           
                         </TreeView.DataTemplates>
                       </TreeView>
-               
+                      </ScrollViewer>
                     </Grid>
                     
                   </StackPanel>
