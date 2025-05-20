@@ -1,15 +1,7 @@
 {
   "ConnectionList": [
     {
-      "Id": 1,
-      "nameBD": "LEADWMS_TEST_SRC",
-      "namePlatform": "Windows, MS SQL Server",
-      "mainIP": "192.168.0.12",
-      "mainPort": "",
-      "mainBD": "LEADWMS_TEST_SRC",
-      "mainUser": "lead_admin",
-      "mainPassword": "kJOCRYoRNUqR65E/nbOjfg=="
-     
+
     }
   ]
 }
